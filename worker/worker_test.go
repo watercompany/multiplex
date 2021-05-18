@@ -7,12 +7,12 @@ import (
 	"github.com/watercompany/multiplex/worker"
 )
 
-func TestGetAvailableWorkers(t *testing.T) {
+func TestRunExecutable(t *testing.T) {
 	tests := []struct {
 		scenario string
 	}{
 		{
-			scenario: "1 worker",
+			scenario: "default worker cfg",
 		},
 	}
 
