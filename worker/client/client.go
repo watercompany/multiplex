@@ -8,7 +8,8 @@ import (
 )
 
 type CallWorkerConfig struct {
-	LogName string
+	LogName  string
+	TaskName string
 }
 
 func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Result) {
@@ -26,7 +27,8 @@ func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Resu
 
 	// Set worker args
 	args := &worker.Args{
-		LogName: cWorker.LogName,
+		LogName:  cWorker.LogName,
+		TaskName: cWorker.TaskName,
 	}
 
 	stat = sess.Call(
