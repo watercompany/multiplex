@@ -23,9 +23,24 @@ func init() {
 func main() {
 	flag.Parse()
 
+	var wCfg worker.WorkerCfg
+	_, err := wCfg.GetWorkerCfg()
+	if err != nil {
+		panic(err)
+	}
+	var addArgs []string
+	if TaskName == "pos" {
+		addArgs, err = worker.GetPOSArgs()
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	testCfg := client.CallWorkerConfig{
-		LogName:  LogName,
-		TaskName: TaskName,
+		LogName:        LogName,
+		TaskName:       TaskName,
+		WorkerCfg:      wCfg,
+		AdditionalArgs: addArgs,
 	}
 
 	var res *worker.Result

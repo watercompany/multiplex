@@ -9,8 +9,7 @@ go mod download
 ```
 
 ### Deployment of Worker
-After setting up the executable and output directory in worker.yml, 
-use this command to deploy workers.
+Use this command to deploy workers.
 
 ```
 WORKERS=[number of workers to deploy] make deploy-workers
@@ -22,6 +21,8 @@ WORKERS=5 make deploy-workers
 ```
 
 ### Give job to worker
+After configuring worker.yml for executable and logging directory
+and pos.yml for proof of space task, run using this command
 ```
 go run main.go  -task=[task name] -log-name=[log-output-name] -worker-port=[port number of a worker] &
 ```
@@ -31,7 +32,7 @@ For test exec
 go run main.go  -task=test -log-name=test-drive-1 -worker-port=9090 &
 ```
 
-For Prrof of Space exec
+For Proof of Space exec
 ```
 go run main.go  -task=pos -log-name=test-drive-1 -worker-port=9090 &
 ```
