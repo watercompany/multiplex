@@ -36,7 +36,7 @@ func main() {
 		}
 	}
 
-	testCfg := client.CallWorkerConfig{
+	clientCfg := client.CallWorkerConfig{
 		LogName:        LogName,
 		TaskName:       TaskName,
 		WorkerCfg:      wCfg,
@@ -44,5 +44,5 @@ func main() {
 	}
 
 	var res *worker.Result
-	client.CallWorker(testCfg, ":"+WorkerPortNum, res)
+	client.CallWorker(clientCfg, ":"+WorkerPortNum, res)
 }
