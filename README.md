@@ -47,17 +47,17 @@ After configuring
 - worker.yml for executable and logging directory
 - pos.yml for proof of space task, run using this command
 ```
-go run main.go add-job -task=[task name] -log-name=[log-output-name]
+go run main.go add-job --task=[task name] --log-name=[log-output-name]
 ```
 ##### Example
 For test exec
 ```
-go run main.go add-job  -task=test -log-name=test-drive-1 
+go run main.go add-job  --task=test --log-name=test-drive-1 
 ```
 
 For Proof of Space exec
 ```
-go run main.go add-job  -task=pos -log-name=test-drive-1 
+go run main.go add-job  --task=pos --log-name=test-drive-1 
 ```
 
 ### View Queued Jobs
