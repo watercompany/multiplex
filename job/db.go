@@ -11,11 +11,16 @@ import (
 	workerclient "github.com/watercompany/multiplex/worker/client"
 )
 
+const (
+	jobLastIndex = "job-last-index"
+	dbAddress    = "localhost:6379"
+)
+
 // docker pull redis
 // docker run --name redis-test-instance -p 6379:6379 -d redis
 func ConnectDB() (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     dbAddress,
 		Password: "",
 		DB:       0,
 	})
@@ -101,7 +106,7 @@ func del(ctx context.Context, client *redis.Client, key string) error {
 }
 
 func incrCounter(ctx context.Context, client *redis.Client) (string, error) {
-	val, err := client.Incr(ctx, "job-last-index").Result()
+	val, err := client.Incr(ctx, jobLastIndex).Result()
 	if err != nil {
 		return "", err
 	}
@@ -110,7 +115,7 @@ func incrCounter(ctx context.Context, client *redis.Client) (string, error) {
 }
 
 func decrCounter(ctx context.Context, client *redis.Client) (string, error) {
-	val, err := client.Decr(ctx, "job-last-index").Result()
+	val, err := client.Decr(ctx, jobLastIndex).Result()
 	if err != nil {
 		return "", err
 	}
@@ -141,7 +146,7 @@ func popWorkerCfg(ctx context.Context, client *redis.Client) (*workerclient.Call
 	var workerCfgVal *workerclient.CallWorkerConfig
 
 	// Get Last Index
-	lastIdx, err := client.Get(ctx, "job-last-index").Result()
+	lastIdx, err := client.Get(ctx, jobLastIndex).Result()
 	if err != nil {
 		return workerCfgVal, err
 	}
@@ -204,17 +209,3 @@ func popWorkerCfg(ctx context.Context, client *redis.Client) (*workerclient.Call
 
 	return workerCfgVal, nil
 }
-
-// func push(ctx context.Context, client *redis.Client, value string) error {
-// 	key, err := incrCounter(ctx, client)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	err = client.Set(ctx, key, value, 0).Err()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
