@@ -8,10 +8,10 @@ import (
 )
 
 type CallWorkerConfig struct {
-	LogName        string
-	TaskName       string
-	WorkerCfg      worker.WorkerCfg
-	AdditionalArgs []string
+	LogName        string           `json:"log_name"`
+	TaskName       string           `json:"task_name"`
+	WorkerCfg      worker.WorkerCfg `json:"worker_cfg"`
+	AdditionalArgs []string         `json:"additional_args"`
 }
 
 func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Result) {
