@@ -43,19 +43,24 @@ go run ./job/dispatcher/main.go -workers=1
 ```
 
 ### Give job to worker
-After configuring worker.yml for executable and logging directory
-and pos.yml for proof of space task, run using this command
+After configuring 
+- worker.yml for executable and logging directory
+- pos.yml for proof of space task, run using this command
 ```
-go run main.go  -task=[task name] -log-name=[log-output-name] -worker-port=[port number of a worker] &
+go run main.go add-job -task=[task name] -log-name=[log-output-name]
 ```
-#### Example
+##### Example
 For test exec
 ```
-go run main.go  -task=test -log-name=test-drive-1 -worker-port=9090 &
+go run main.go add-job  -task=test -log-name=test-drive-1 
 ```
 
 For Proof of Space exec
 ```
-go run main.go  -task=pos -log-name=test-drive-1 -worker-port=9090 &
+go run main.go add-job  -task=pos -log-name=test-drive-1 
 ```
 
+### View Queued Jobs
+```
+go run main.go view-jobs
+```
