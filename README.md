@@ -39,7 +39,7 @@ go run ./job/dispatcher/main.go -workers=[number of available workers]
 ```
 ###### Example
 ```
-go run ./job/dispatcher/main.go -workers=1
+go run ./job/dispatcher/main.go -workers=1 &
 ```
 
 ### Give job to worker

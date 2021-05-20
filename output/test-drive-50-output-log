@@ -1,0 +1,40 @@
+2021/05/20 17:30:24 Process PID: 32036
+2021/05/20 17:30:24 operation: create
+2021/05/20 17:30:24 Generating plot for k=25 filename=plot-k25-2021-05-17-20-13-b22313297558bd1ad8414e5f6d24bdc3163430c1a45b0fd0d97c802c10241513.plot id=b22313297558bd1ad8414e5f6d24bdc3163430c1a45b0fd0d97c802c10241513
+2021/05/20 17:30:24 
+2021/05/20 17:30:24 
+2021/05/20 17:30:24 Starting plotting progress into temporary dirs: ./plotfiles/temp and ./plotfiles/temp2
+2021/05/20 17:30:24 Final dir: ./plotfiles/final (parallel writing: enabled)
+2021/05/20 17:30:24 ID: b22313297558bd1ad8414e5f6d24bdc3163430c1a45b0fd0d97c802c10241513
+2021/05/20 17:30:24 Plot size is: 25
+2021/05/20 17:30:24 Buffer size is: 3389MiB
+2021/05/20 17:30:24 Using 16 buckets
+2021/05/20 17:30:24 Using 24 threads of stripe size 65536
+2021/05/20 17:30:24 
+2021/05/20 17:30:24 Starting phase 1/4: Forward Propagation into tmp files... Thu May 20 17:30:24 2021
+2021/05/20 17:30:24 Computing table 1
+2021/05/20 17:30:26 F1 complete, time: 2.301 seconds. CPU (92.69%) Thu May 20 17:30:26 2021
+2021/05/20 17:30:26 Computing table 2
+2021/05/20 17:30:26 	Bucket 0 uniform sort. Ram: 3.190GiB, u_sort min: 0.027GiB, qs min: 0.014GiB.
+2021/05/20 17:30:27 	Bucket 1 uniform sort. Ram: 3.190GiB, u_sort min: 0.027GiB, qs min: 0.014GiB.
+2021/05/20 17:30:28 	Bucket 2 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:29 	Bucket 3 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:30 	Bucket 4 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:31 	Bucket 5 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:32 	Bucket 6 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:33 	Bucket 7 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:34 	Bucket 8 uniform sort. Ram: 3.190GiB, u_sort min: 0.027GiB, qs min: 0.014GiB.
+2021/05/20 17:30:35 	Bucket 9 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:37 	Bucket 10 uniform sort. Ram: 3.190GiB, u_sort min: 0.027GiB, qs min: 0.014GiB.
+2021/05/20 17:30:37 	Bucket 11 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:38 	Bucket 12 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:39 	Bucket 13 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:40 	Bucket 14 uniform sort. Ram: 3.190GiB, u_sort min: 0.027GiB, qs min: 0.014GiB.
+2021/05/20 17:30:41 	Bucket 15 uniform sort. Ram: 3.190GiB, u_sort min: 0.055GiB, qs min: 0.014GiB.
+2021/05/20 17:30:42 	Total matches: 33554643
+2021/05/20 17:30:42 Forward propagation table time: 15.180 seconds. CPU (175.140%) Thu May 20 17:30:42 2021
+2021/05/20 17:30:42 Computing table 3
+2021/05/20 17:30:42 	Bucket 0 uniform sort. Ram: 3.190GiB, u_sort min: 0.117GiB, qs min: 0.029GiB.
+2021/05/20 17:30:43 	Bucket 1 uniform sort. Ram: 3.190GiB, u_sort min: 0.117GiB, qs min: 0.029GiB.
+2021/05/20 17:30:44 	Bucket 2 uniform sort. Ram: 3.190GiB, u_sort min: 0.059GiB, qs min: 0.029GiB.
+2021/05/20 17:30:44 	Bucket 3 uniform sort. Ram: 3.190GiB, u_sort min: 0.117GiB, qs min: 0.029GiB.
