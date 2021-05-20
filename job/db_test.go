@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/watercompany/multiplex/worker"
 	workerclient "github.com/watercompany/multiplex/worker/client"
 )
@@ -131,5 +132,14 @@ func TestDatabase_Pop(t *testing.T) {
 				t.Logf("%v:%v\n", key, val)
 			}
 		})
+	}
+}
+
+func TestDatabase_GetEmpty(t *testing.T) {
+	db, _ := ConnectDB()
+	db.FlushAll(context.Background())
+	_, err := get(context.Background(), db, jobLastIndex)
+	if err != redis.Nil {
+		t.Logf("want err redis.Nil, got %v", err)
 	}
 }
