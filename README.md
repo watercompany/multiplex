@@ -10,11 +10,11 @@ go mod download
 
 ## Usage 
 Follow these steps for usage:
-    - Deploy workers first
-    - Run Redis Database Instance
-    - Run Dispatcher
-    - Give Jobs to Workers
-    - View Queued Jobs
+1. Deploy workers first
+2. Run Redis Database Instance
+3. Run Dispatcher
+4. Give Jobs to Workers
+5. View Queued Jobs
 
 ### Deployment of Worker
 Use this command to deploy workers.
