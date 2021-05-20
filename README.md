@@ -22,7 +22,6 @@ Use this command to deploy workers.
 WORKERS=[number of workers to deploy] make deploy-workers
 ```
 ###### Example
-
 ```
 WORKERS=5 make deploy-workers
 ```
@@ -36,7 +35,11 @@ docker run --name redis-test-instance -p 6379:6379 -d redis
 ### Run Dispatcher
 Use this command to run the dispatcher.
 ```
-go run ./job/dispatcher/main.go
+go run ./job/dispatcher/main.go -workers=[number of available workers]
+```
+###### Example
+```
+go run ./job/dispatcher/main.go -workers=1
 ```
 
 ### Give job to worker

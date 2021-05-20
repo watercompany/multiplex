@@ -12,6 +12,10 @@ import (
 	"github.com/watercompany/multiplex/worker/client"
 )
 
+const (
+	BasePortNumber = 9090
+)
+
 var (
 	numberOfWorkers int
 )
@@ -71,4 +75,12 @@ func RunDispatcher() {
 		}
 	}()
 	wg.Wait()
+}
+
+func GetAvailableWorkers(numberOfAvailableWorkers int) []int {
+	var workersAddr []int
+	for i := 0; i < numberOfAvailableWorkers; i++ {
+		workersAddr = append(workersAddr, BasePortNumber+i)
+	}
+	return workersAddr
 }
