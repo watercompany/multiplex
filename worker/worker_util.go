@@ -12,8 +12,8 @@ const (
 )
 
 type WorkerCfg struct {
-	ExecDir   string `yaml:"exec_dir"`
-	OutputDir string `yaml:"output_dir"`
+	ExecDir   string `yaml:"exec_dir" json:"exec_dir"`
+	OutputDir string `yaml:"output_dir" json:"output_dir"`
 }
 
 func (wc *WorkerCfg) GetWorkerCfg() (*WorkerCfg, error) {

@@ -11,19 +11,8 @@ import (
 )
 
 func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
-	var wCfg WorkerCfg
-	_, err := wCfg.GetWorkerCfg()
-	if err != nil {
-		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error getting worker cfg: %v", err))
-	}
-
-	var addArgs []string
-	if args.TaskName == "pos" {
-		addArgs, err = GetPOSArgs()
-		if err != nil {
-			return Result{}, erpc.NewStatus(1, fmt.Sprintf("error opening file: %v", err))
-		}
-	}
+	var wCfg WorkerCfg = args.WorkerCfg
+	var addArgs []string = args.AdditionalArgs
 
 	outputName := fmt.Sprintf("%v-output-log", args.LogName)
 	f, err := os.OpenFile(wCfg.OutputDir+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)

@@ -8,8 +8,10 @@ const (
 )
 
 type Args struct {
-	LogName  string
-	TaskName string
+	LogName        string
+	TaskName       string
+	WorkerCfg      WorkerCfg
+	AdditionalArgs []string
 }
 
 type Result struct {
