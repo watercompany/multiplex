@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -20,7 +19,7 @@ var (
 	numberOfWorkers int
 )
 
-var wg = sync.WaitGroup{}
+// var wg = sync.WaitGroup{}
 
 func init() {
 	flag.IntVar(&numberOfWorkers, "workers", 1, "number of available workers")
