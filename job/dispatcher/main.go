@@ -43,11 +43,11 @@ func RunDispatcher() {
 		}
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		for {
-			time.Sleep(1 * time.Second)
+	for {
+		time.Sleep(1 * time.Second)
+		// wg.Add(1)
+		go func() {
+			defer wg.Done()
 
 			jobs, err := job.GetNumberOfCurrentJobs()
 			if err != redis.Nil && err != nil {
@@ -72,9 +72,10 @@ func RunDispatcher() {
 				// it can be used by another go routine.
 				availPortsCh <- currPortNum
 			}
-		}
-	}()
-	wg.Wait()
+
+		}()
+	}
+	// wg.Wait()
 }
 
 func GetAvailableWorkers(numberOfAvailableWorkers int) []int {
