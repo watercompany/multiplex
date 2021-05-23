@@ -23,7 +23,7 @@ WORKERS=[number of workers to deploy] make deploy-workers
 ```
 ###### Example
 ```
-WORKERS=5 make deploy-workers
+WORKERS=8 make deploy-workers
 ```
 
 ### Run Redis Instance
@@ -39,7 +39,7 @@ go run ./job/dispatcher/main.go -workers=[number of available workers]
 ```
 ###### Example
 ```
-go run ./job/dispatcher/main.go -workers=1 &
+go run ./job/dispatcher/main.go -workers=8 &
 ```
 
 ### Give job to worker

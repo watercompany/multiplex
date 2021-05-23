@@ -8,6 +8,7 @@ import (
 	"os/exec"
 
 	"github.com/henrylee2cn/erpc/v6"
+	"github.com/watercompany/multiplex/mover"
 )
 
 func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
@@ -25,9 +26,24 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	var finalArg []string
 	finalArg = append(finalArg, wCfg.ExecDir)
 	finalArg = append(finalArg, addArgs...)
+
+	// Check if temp dir have enough storage
+	// 300GB free per plot
+	freeSpaceInMB := mover.GetFreeDiskSpaceInMB(args.TempDir)
+	if freeSpaceInMB < 300000 {
+		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error not enough free space: %v MB", freeSpaceInMB))
+	}
+
 	err = RunExecutable(finalArg...)
 	if err != nil {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error running exec: %v", err))
+	}
+	// Move
+	// Copy final plot to somewhere
+	// Delete final plot
+	err = moveFinalPlot(args)
+	if err != nil {
+		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error moving final plot: %v", err))
 	}
 
 	res := Result{}
@@ -70,6 +86,25 @@ func RunExecutable(args ...string) error {
 	if err != nil {
 		return fmt.Errorf("error waiting for cmd: %v", err)
 	}
+
+	return nil
+}
+
+func moveFinalPlot(args *Args) error {
+	// Check src path size
+	dirSize, err := mover.DirSizeInMB(args.FinalDir)
+	if err != nil {
+		panic(err)
+	}
+
+	// Check if destpath have available size for that
+	destFreeSpace := mover.GetFreeDiskSpaceInMB(args.FinalDestDir)
+	if dirSize > int64(destFreeSpace) {
+		panic("file size greater than destination free space")
+	}
+
+	// Moves and Deletes
+	mover.MoveFile(args.FinalDir, args.FinalDestDir)
 
 	return nil
 }

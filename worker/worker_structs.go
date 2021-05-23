@@ -12,6 +12,9 @@ type Args struct {
 	TaskName       string
 	WorkerCfg      WorkerCfg
 	AdditionalArgs []string
+	TempDir        string
+	FinalDir       string
+	FinalDestDir   string
 }
 
 type Result struct {
