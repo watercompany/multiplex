@@ -47,7 +47,7 @@ func RunDispatcher() {
 		time.Sleep(1 * time.Second)
 		// wg.Add(1)
 		go func() {
-			defer wg.Done()
+			// defer wg.Done()
 
 			jobs, err := job.GetNumberOfCurrentJobs()
 			if err != redis.Nil && err != nil {
