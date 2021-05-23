@@ -42,16 +42,14 @@ var addJobCmd = &cobra.Command{
 		}
 
 		var addArgs []string
-		var tempDir string
-		var finalDir string
-		var finalDestDir string
+		var posCfg worker.POSCfg
 		if TaskName == "pos" {
 			addArgs, err = worker.GetPOSArgs()
 			if err != nil {
 				panic(err)
 			}
 
-			tempDir, finalDir, finalDestDir, err = worker.GetTempAndFinalDir()
+			_, err := posCfg.GetPOSCfg()
 			if err != nil {
 				panic(err)
 			}
@@ -62,9 +60,7 @@ var addJobCmd = &cobra.Command{
 			TaskName:       TaskName,
 			WorkerCfg:      wCfg,
 			AdditionalArgs: addArgs,
-			TempDir:        tempDir,
-			FinalDir:       finalDir,
-			FinalDestDir:   finalDestDir,
+			POSCfg:         posCfg,
 		}
 
 		err = job.AddJob(clientCfg)

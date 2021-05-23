@@ -65,20 +65,22 @@ func GetPOSArgs() ([]string, error) {
 	return args, nil
 }
 
-func GetTempAndFinalDir() (string, string, string, error) {
+func GetTempAndFinalDir() (string, string, string, string, error) {
 	var temp string
 	var final string
 	var finalDest string
+	var plotName string
 	var posCfg POSCfg
 
 	_, err := posCfg.GetPOSCfg()
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", "", err
 	}
 
 	temp = posCfg.TempDir
 	final = posCfg.FinalDir
 	finalDest = posCfg.FinalDestDir
+	plotName = posCfg.FileName
 
-	return temp, final, finalDest, nil
+	return temp, final, finalDest, plotName, nil
 }

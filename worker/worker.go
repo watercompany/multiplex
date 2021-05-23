@@ -29,7 +29,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 
 	// Check if temp dir have enough storage
 	// 300GB free per plot
-	freeSpaceInMB := mover.GetFreeDiskSpaceInMB(args.TempDir)
+	freeSpaceInMB := mover.GetFreeDiskSpaceInMB(args.POSCfg.TempDir)
 	if freeSpaceInMB < 300000 {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error not enough free space: %v MB", freeSpaceInMB))
 	}
@@ -92,19 +92,19 @@ func RunExecutable(args ...string) error {
 
 func moveFinalPlot(args *Args) error {
 	// Check src path size
-	dirSize, err := mover.DirSizeInMB(args.FinalDir)
+	dirSize, err := mover.DirSizeInMB(args.POSCfg.FinalDir)
 	if err != nil {
 		panic(err)
 	}
 
 	// Check if destpath have available size for that
-	destFreeSpace := mover.GetFreeDiskSpaceInMB(args.FinalDestDir)
+	destFreeSpace := mover.GetFreeDiskSpaceInMB(args.POSCfg.FinalDestDir)
 	if dirSize > int64(destFreeSpace) {
 		panic("file size greater than destination free space")
 	}
 
 	// Moves and Deletes
-	mover.MoveFile(args.FinalDir, args.FinalDestDir)
+	mover.MoveFile(args.POSCfg.FinalDir, args.POSCfg.FinalDestDir, args.POSCfg.FileName)
 
 	return nil
 }
