@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 // func Mover() {
@@ -34,7 +35,17 @@ import (
 // 	}
 // }
 
-func MoveFile(sourcePath, destPath string) error {
+func MoveFile(sourcePath, destPath, filename string) error {
+	if !strings.HasSuffix(sourcePath, "/") {
+		sourcePath = sourcePath + "/"
+	}
+
+	if !strings.HasSuffix(destPath, "/") {
+		destPath = destPath + "/"
+	}
+
+	sourcePath = sourcePath + filename
+	destPath = destPath + filename
 	inputFile, err := os.Open(sourcePath)
 	if err != nil {
 		return fmt.Errorf("couldn't open source file: %s", err)
