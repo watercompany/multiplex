@@ -12,18 +12,19 @@ const (
 )
 
 type POSCfg struct {
-	TempDir    string `yaml:"tmp_dir"`
-	Temp2Dir   string `yaml:"tmp2_dir"`
-	FinalDir   string `yaml:"final_dir"`
-	FileName   string `yaml:"filename"`
-	Size       string `yaml:"size"`
-	PlotMemo   string `yaml:"plot_memo"`
-	PlotID     string `yaml:"plot_id"`
-	Buffer     string `yaml:"buffer"`
-	StripeSize string `yaml:"stripe_size"`
-	NumThreads string `yaml:"num_threads"`
-	NumBuckets string `yaml:"num_buckets"`
-	NoBitField string `yaml:"nobitfield"`
+	TempDir      string `yaml:"tmp_dir"`
+	Temp2Dir     string `yaml:"tmp2_dir"`
+	FinalDir     string `yaml:"final_dir"`
+	FinalDestDir string `yaml:"final_dest_dir"`
+	FileName     string `yaml:"filename"`
+	Size         string `yaml:"size"`
+	PlotMemo     string `yaml:"plot_memo"`
+	PlotID       string `yaml:"plot_id"`
+	Buffer       string `yaml:"buffer"`
+	StripeSize   string `yaml:"stripe_size"`
+	NumThreads   string `yaml:"num_threads"`
+	NumBuckets   string `yaml:"num_buckets"`
+	NoBitField   string `yaml:"nobitfield"`
 }
 
 func (pc *POSCfg) GetPOSCfg() (*POSCfg, error) {
@@ -62,4 +63,24 @@ func GetPOSArgs() ([]string, error) {
 	args = append(args, "--nobitfield", posCfg.NoBitField)
 
 	return args, nil
+}
+
+func GetTempAndFinalDir() (string, string, string, string, error) {
+	var temp string
+	var final string
+	var finalDest string
+	var plotName string
+	var posCfg POSCfg
+
+	_, err := posCfg.GetPOSCfg()
+	if err != nil {
+		return "", "", "", "", err
+	}
+
+	temp = posCfg.TempDir
+	final = posCfg.FinalDir
+	finalDest = posCfg.FinalDestDir
+	plotName = posCfg.FileName
+
+	return temp, final, finalDest, plotName, nil
 }

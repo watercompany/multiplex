@@ -12,6 +12,7 @@ type Args struct {
 	TaskName       string
 	WorkerCfg      WorkerCfg
 	AdditionalArgs []string
+	POSCfg         POSCfg
 }
 
 type Result struct {

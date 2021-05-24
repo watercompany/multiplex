@@ -40,9 +40,16 @@ var addJobCmd = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
+
 		var addArgs []string
+		var posCfg worker.POSCfg
 		if TaskName == "pos" {
 			addArgs, err = worker.GetPOSArgs()
+			if err != nil {
+				panic(err)
+			}
+
+			_, err := posCfg.GetPOSCfg()
 			if err != nil {
 				panic(err)
 			}
@@ -53,6 +60,7 @@ var addJobCmd = &cobra.Command{
 			TaskName:       TaskName,
 			WorkerCfg:      wCfg,
 			AdditionalArgs: addArgs,
+			POSCfg:         posCfg,
 		}
 
 		err = job.AddJob(clientCfg)
