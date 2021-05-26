@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+    db:
+        image: redis
+        ports:
+            - 6379:6379
+    multiplex-service:
+        image: kenje4090/multiplex:latest
+        volumes:
+            - /mnt/ssd1:/mnt/ssd1
+            - /mnt/ssd2:/mnt/ssd2
+            - /mnt/ssd3:/mnt/ssd3
+            - /mnt/ssd4:/mnt/ssd4
+            - /mnt/ssd5:/mnt/ssd5
+            - /mnt/ssd6:/mnt/ssd6
+            - /mnt/ssd7:/mnt/ssd7
+            - /mnt/ssd8:/mnt/ssd8
+            - /media/cx/10tb:/media/cx/10tb
+            - ./output:/output
+        ports:
+            - 9090-9190:9090-9190
+            - 6379:6379
+        depends_on: 
+            - db
