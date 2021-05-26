@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/henrylee2cn/erpc/v6"
 	"github.com/watercompany/multiplex/mover"
@@ -15,7 +16,8 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	var wCfg WorkerCfg = args.WorkerCfg
 	var addArgs []string = args.AdditionalArgs
 
-	outputName := fmt.Sprintf("%v-output-log", args.LogName)
+	timeNow := time.Now().Format(time.RFC3339)
+	outputName := fmt.Sprintf("%v-%v-output-log", timeNow, args.LogName)
 	f, err := os.OpenFile(wCfg.OutputDir+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error opening file: %v", err))
@@ -51,6 +53,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 }
 
 func RunExecutable(args ...string) error {
+	log.Printf("Command executed: time %v\n", args)
 	cmd := exec.Command("time", args...)
 
 	// create a pipe for the output of the script
