@@ -114,7 +114,10 @@ func moveFinalPlot(args *Args) error {
 	}
 
 	// Moves and Deletes
-	mover.MoveFile(args.POSCfg.FinalDir, args.POSCfg.FinalDestDir, args.POSCfg.FileName)
+	err = mover.MoveFile(args.POSCfg.FinalDir, args.POSCfg.FinalDestDir, args.POSCfg.FileName)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
