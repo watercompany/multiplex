@@ -43,6 +43,8 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		log.Printf("error running exec: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error running exec: %v", err))
 	}
+
+	startMoveTime := time.Now()
 	// Move
 	// Copy final plot to somewhere
 	// Delete final plot
@@ -51,7 +53,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		log.Printf("error moving final plot: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error moving final plot: %v", err))
 	}
-	log.Printf("Final Plot has been moved to final destination dir.\n")
+	log.Printf("Final Plot has been moved to final destination dir.\nTook: %v minutes\n", time.Since(startMoveTime).Minutes())
 	res := Result{}
 	return res, nil
 }
