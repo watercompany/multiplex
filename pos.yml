@@ -12,5 +12,5 @@
     buffer: "16000"
     stripe_size: "65536"
     num_threads: "6"
-    num_buckets: "0"
+    num_buckets: "64"
     nobitfield: "false"

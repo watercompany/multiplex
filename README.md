@@ -8,8 +8,8 @@ go mod tidy
 go mod download
 ```
 
-## Usage 
-Follow these steps for usage:
+## Manual Usage 
+Follow these steps for manual usage:
 1. Deploy workers first
 2. Run Redis Database Instance
 3. Run Dispatcher
@@ -64,3 +64,10 @@ go run main.go add-job  --task=pos --log-name=test-drive-1
 ```
 go run main.go view-jobs
 ```
+
+## Docker Usage 
+Follow these steps for dockerized usage:
+1. Run make push-docker
+2. Run docker-compose up
+3. Configure pos.yml and worker.yml
+4. Add job to worker
