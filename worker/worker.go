@@ -2,6 +2,7 @@ package worker
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -103,13 +104,13 @@ func moveFinalPlot(args *Args) error {
 	// Check src path size
 	dirSize, err := mover.DirSizeInMB(args.POSCfg.FinalDir)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	// Check if destpath have available size for that
 	destFreeSpace := mover.GetFreeDiskSpaceInMB(args.POSCfg.FinalDestDir)
 	if dirSize > int64(destFreeSpace) {
-		panic("file size greater than destination free space")
+		return errors.New("file size greater than destination free space")
 	}
 
 	// Moves and Deletes
