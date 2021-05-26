@@ -20,6 +20,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	outputName := fmt.Sprintf("%v-%v-output-log", timeNow, args.LogName)
 	f, err := os.OpenFile(wCfg.OutputDir+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
+		log.Printf("error opening file: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error opening file: %v", err))
 	}
 	defer f.Close()
@@ -33,11 +34,13 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	// 300GB free per plot
 	freeSpaceInMB := mover.GetFreeDiskSpaceInMB(args.POSCfg.TempDir)
 	if freeSpaceInMB < 300000 {
+		log.Printf("error not enough free space: %v MB", freeSpaceInMB)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error not enough free space: %v MB", freeSpaceInMB))
 	}
 
 	err = RunExecutable(finalArg...)
 	if err != nil {
+		log.Printf("error running exec: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error running exec: %v", err))
 	}
 	// Move
@@ -45,9 +48,10 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	// Delete final plot
 	err = moveFinalPlot(args)
 	if err != nil {
+		log.Printf("error moving final plot: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error moving final plot: %v", err))
 	}
-
+	log.Printf("Final Plot has been moved to final destination dir.\n")
 	res := Result{}
 	return res, nil
 }
