@@ -31,7 +31,7 @@ func TestDatabase_PushWorkerCfg(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.Background()
-			db, err := ConnectDB()
+			db, err := ConnectDB("")
 			if err != nil {
 				t.Fatalf("err:%v\n", err)
 			}
@@ -88,7 +88,7 @@ func TestDatabase_Pop(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.Background()
-			db, err := ConnectDB()
+			db, err := ConnectDB("")
 			if err != nil {
 				t.Fatalf("err:%v\n", err)
 			}
@@ -136,7 +136,7 @@ func TestDatabase_Pop(t *testing.T) {
 }
 
 func TestDatabase_GetEmpty(t *testing.T) {
-	db, _ := ConnectDB()
+	db, _ := ConnectDB("")
 	db.FlushAll(context.Background())
 	_, err := get(context.Background(), db, jobLastIndex)
 	if err != redis.Nil {

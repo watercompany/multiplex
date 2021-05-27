@@ -43,38 +43,33 @@ func RunDispatcher() {
 	}()
 
 	for {
-		time.Sleep(1 * time.Second)
-		// wg.Add(1)
-		go func() {
-			// defer wg.Done()
+		time.Sleep(5 * time.Second)
+		jobs, err := job.GetNumberOfCurrentJobs()
+		if err != redis.Nil && err != nil {
+			panic(err)
+		}
 
-			jobs, err := job.GetNumberOfCurrentJobs()
-			if err != redis.Nil && err != nil {
+		if jobs != 0 {
+			// Deploy a job to worker
+			// Get worker port number from
+			// avail ports channel.
+			currPortNum := <-availPortsCh
+
+			clientCfg, err := job.GetJob()
+			if err != nil {
 				panic(err)
 			}
 
-			if jobs != 0 {
-				clientCfg, err := job.GetJob()
-				if err != nil {
-					panic(err)
-				}
-
-				// Deploy a job to worker
-				// Get worker port number from
-				// avail ports channel.
-				currPortNum := <-availPortsCh
-
+			go func(clientCfg *client.CallWorkerConfig, currPortNum int) {
 				var res *worker.Result
 				client.CallWorker(*clientCfg, fmt.Sprintf(":%v", currPortNum), res)
 
 				// Append back the worker port number used so that
 				// it can be used by another go routine.
 				availPortsCh <- currPortNum
-			}
-
-		}()
+			}(clientCfg, currPortNum)
+		}
 	}
-	// wg.Wait()
 }
 
 func GetAvailableWorkers(numberOfAvailableWorkers int) []int {

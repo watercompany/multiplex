@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	LogName  string
-	TaskName string
+	LogName      string
+	TaskName     string
+	databaseAddr string
 )
 
 func init() {
@@ -28,6 +29,13 @@ func init() {
 		"task",
 		"pos",
 		"name of the task the worker will do",
+	)
+
+	addJobCmd.Flags().StringVar(
+		&databaseAddr,
+		"db-addr",
+		"",
+		"address of database to save jobs",
 	)
 }
 
@@ -63,7 +71,7 @@ var addJobCmd = &cobra.Command{
 			POSCfg:         posCfg,
 		}
 
-		err = job.AddJob(clientCfg)
+		err = job.AddJob(clientCfg, databaseAddr)
 		if err != nil {
 			fmt.Printf("unable to add job: %v", err)
 			return

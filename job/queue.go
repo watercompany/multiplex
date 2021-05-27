@@ -7,9 +7,9 @@ import (
 	workerclient "github.com/watercompany/multiplex/worker/client"
 )
 
-func AddJob(wCfg workerclient.CallWorkerConfig) error {
+func AddJob(wCfg workerclient.CallWorkerConfig, databaseAddress string) error {
 	ctx := context.Background()
-	dbClient, err := ConnectDB()
+	dbClient, err := ConnectDB(databaseAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -21,7 +21,7 @@ func AddJob(wCfg workerclient.CallWorkerConfig) error {
 func GetJob() (*workerclient.CallWorkerConfig, error) {
 	var workerCfg *workerclient.CallWorkerConfig
 	ctx := context.Background()
-	dbClient, err := ConnectDB()
+	dbClient, err := ConnectDB("")
 	if err != nil {
 		return workerCfg, err
 	}
@@ -36,7 +36,7 @@ func GetJob() (*workerclient.CallWorkerConfig, error) {
 
 func GetNumberOfCurrentJobs() (int, error) {
 	ctx := context.Background()
-	dbClient, err := ConnectDB()
+	dbClient, err := ConnectDB("")
 	if err != nil {
 		return 0, err
 	}
@@ -56,7 +56,7 @@ func GetNumberOfCurrentJobs() (int, error) {
 
 func ListAllJobs() (map[string]string, error) {
 	ctx := context.Background()
-	dbClient, err := ConnectDB()
+	dbClient, err := ConnectDB("")
 	if err != nil {
 		return map[string]string{}, err
 	}

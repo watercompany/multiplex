@@ -16,7 +16,7 @@ type CallWorkerConfig struct {
 }
 
 func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Result) {
-	erpc.SetLoggerLevel("OFF")()
+	erpc.SetLoggerLevel("ON")()
 	cli := erpc.NewPeer(erpc.PeerConfig{RedialTimes: -1, RedialInterval: time.Second})
 	defer cli.Close()
 	cli.SetTLSConfig(erpc.GenerateTLSConfigForClient())

@@ -17,8 +17,9 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	var wCfg WorkerCfg = args.WorkerCfg
 	var addArgs []string = args.AdditionalArgs
 
-	timeNow := time.Now().Format(time.RFC3339)
-	outputName := fmt.Sprintf("%v-%v-output-log", timeNow, args.LogName)
+	timeNow := time.Now()
+	timeNowFormatted := timeNow.Format(time.RFC3339)
+	outputName := fmt.Sprintf("%v-%v-plot-generation-log", timeNowFormatted, args.LogName)
 	f, err := os.OpenFile(wCfg.OutputDir+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
@@ -27,9 +28,22 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	defer f.Close()
 	log.SetOutput(f)
 
+	paramLogName := fmt.Sprintf("%v-%v-param-and-time-log", timeNowFormatted, args.LogName)
+	paramLog, err := os.OpenFile(wCfg.OutputDir+paramLogName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Printf("error opening file: %v", err)
+		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error opening file: %v", err))
+	}
+	defer paramLog.Close()
+
 	var finalArg []string
 	finalArg = append(finalArg, wCfg.ExecDir)
 	finalArg = append(finalArg, addArgs...)
+
+	_, err = paramLog.Write([]byte(fmt.Sprintf("Command Executed: time %v\nTime Started: %v\n", args, timeNow)))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Check if temp dir have enough storage
 	// 300GB free per plot
@@ -54,7 +68,18 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		log.Printf("error moving final plot: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error moving final plot: %v", err))
 	}
-	log.Printf("Final Plot has been moved to final destination dir.\nTook: %v minutes\n", time.Since(startMoveTime).Minutes())
+	log.Printf("Final Plot has been moved to final destination dir.\nMoving Plot Took: %v minutes\n", time.Since(startMoveTime).Minutes())
+
+	_, err = paramLog.Write([]byte(fmt.Sprintf("Time Finished: %v\n", time.Now())))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = paramLog.Write([]byte(fmt.Sprintf("Duration: %v minutes\n", time.Since(timeNow).Minutes())))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	res := Result{}
 	return res, nil
 }
