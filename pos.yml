@@ -1,14 +1,14 @@
 ---
-    tmp_dir: "/mnt/ssd8/plotfiles/temp"
-    tmp2_dir: "/mnt/ssd8/plotfiles/temp2"
-    final_dir: "/mnt/ssd8/plotfiles/final"
+    tmp_dir: "/mnt/ssd5/plotfiles/temp"
+    tmp2_dir: "/mnt/ssd5/plotfiles/temp2"
+    final_dir: "/mnt/ssd5/plotfiles/final"
     # final_dest_dir is the final dir for the plot
     # this is where we will move it out from local SSDs to SMBs
     final_dest_dir: "/media/cx/10tb" 
-    filename: "plot-k32-2021-05-23-ssd8-b22313297558bd1ad8414e5f6d24bdc3163430c1a45b0fd0d97c802c10241513.plot"
+    filename: plot-k32-2021-05-26-23-23-75ff84e591dc39df433d1a2cb64ee8f0b06ac9a723b521d8c5562443418f6277.plot"
     size: "32"
-    plot_memo: "aac13cb5fb04e85d1a26ffe5c155b3089f527af3574621bb4d59d364fd628a0cc80edc042c9a8139e2b62c15398259ac89b692b9769337f370a483d72dc9529ac96d2162ae1ceb51d152063681a044fdd01168b91e4bf53dc6e7ba0f8bc34bdc1f5be03430256c843f6078c554bddf22b600a9dc96e264f3da0454b41ff1b70e"
-    plot_id: "b22313297558bd1ad8414e5f6d24bdc3163430c1a45b0fd0d97c802c10241513"
+    plot_memo: "a99f56f324f800c48ea5efaeb9a12f9783dcb2942e5528eba2331450368d1792b2cea4dc88018c50b6d7bcbb72a60ec486900c5d26f26218afe1940cbfa90f1e8fa1ff37150720f46e5271712a6047c3dc783e3d793dd363e0d5df19b896196909285a806869dcb599ebeb0b496daabd06689cc0a6bda2b34bde5de90bbce62e"
+    plot_id: "75ff84e591dc39df433d1a2cb64ee8f0b06ac9a723b521d8c5562443418f6277"
     buffer: "16000"
     stripe_size: "65536"
     num_threads: "6"
