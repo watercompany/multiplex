@@ -18,9 +18,12 @@ const (
 
 // docker pull redis
 // docker run --name redis-test-instance -p 6379:6379 -d redis
-func ConnectDB() (*redis.Client, error) {
+func ConnectDB(address string) (*redis.Client, error) {
+	if address == "" {
+		address = dbAddress
+	}
 	client := redis.NewClient(&redis.Options{
-		Addr:     dbAddress,
+		Addr:     address,
 		Password: "",
 		DB:       0,
 	})

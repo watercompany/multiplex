@@ -32,7 +32,7 @@ func TestQueue_AddJob(t *testing.T) {
 		t.Run(tc.scenario, func(t *testing.T) {
 			flushDB(t)
 
-			err := job.AddJob(tc.workerCfg)
+			err := job.AddJob(tc.workerCfg, "")
 			if err != nil {
 				t.Fatalf("err: %v\n", err)
 			}
@@ -75,7 +75,7 @@ func TestQueue_GetJob(t *testing.T) {
 			for i := 1; i < 5; i++ {
 				saveCfg := tc.workerCfg
 				saveCfg.LogName = tc.workerCfg.LogName + fmt.Sprintf("-%v", i)
-				err := job.AddJob(saveCfg)
+				err := job.AddJob(saveCfg, "")
 				if err != nil {
 					t.Fatalf("err: %v\n", err)
 				}
@@ -125,7 +125,7 @@ func TestQueue_ListAllJob(t *testing.T) {
 			for i := 1; i < 5; i++ {
 				saveCfg := tc.workerCfg
 				saveCfg.LogName = tc.workerCfg.LogName + fmt.Sprintf("-%v", i)
-				err := job.AddJob(saveCfg)
+				err := job.AddJob(saveCfg, "")
 				if err != nil {
 					t.Fatalf("err: %v\n", err)
 				}
@@ -171,7 +171,7 @@ func TestQueue_GetCurrentNumberOfJobs(t *testing.T) {
 			for i := 1; i <= tc.numberOfJobs; i++ {
 				saveCfg := tc.workerCfg
 				saveCfg.LogName = tc.workerCfg.LogName + fmt.Sprintf("-%v", i)
-				err := job.AddJob(saveCfg)
+				err := job.AddJob(saveCfg, "")
 				if err != nil {
 					t.Fatalf("err: %v\n", err)
 				}
@@ -202,7 +202,7 @@ func TestQueue_GetCurrentNumberOfJobs(t *testing.T) {
 
 func flushDB(t *testing.T) {
 	ctx := context.Background()
-	db, err := job.ConnectDB()
+	db, err := job.ConnectDB("")
 	if err != nil {
 		t.Fatalf("err:%v\n", err)
 	}
