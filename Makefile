@@ -6,6 +6,9 @@ endif
 deploy-workers: deploy-env
 	WORKERS=$(WORKERS) ./scripts/workers.sh
 
+run-multiplex: deploy-env
+	WORKERS=$(WORKERS) ./scripts/run-multiplex.sh
+
 build-env:
 ifndef NAME
 	$(error NAME is not defined)
