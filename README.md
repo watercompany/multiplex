@@ -16,6 +16,9 @@ Follow these steps for manual usage:
 4. Give Jobs to Workers
 5. View Queued Jobs
 
+Or run automated script that follows step 1-3:
+WORKERS=[number of workers] make run-multiplex
+
 ### Deployment of Worker
 Use this command to deploy workers.
 ```
