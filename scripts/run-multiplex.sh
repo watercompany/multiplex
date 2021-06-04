@@ -12,12 +12,12 @@ then
 	WORKERS=1
 fi
 
-WORKERS=$WORKERS make deploy-workers
+sudo WORKERS=$WORKERS make deploy-workers
 
 # Run Redis Instance
-docker pull redis
-docker run --name redis-test-instance -p 6379:6379 -d redis
+sudo docker pull redis
+sudo docker run --name redis-test-instance -p 6379:6379 -d redis
 
 # Run Dispatcher
-go run ./job/dispatcher/main.go -workers=$WORKERS &
+sudo go run ./job/dispatcher/main.go -workers=$WORKERS &
 
