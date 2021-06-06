@@ -44,13 +44,19 @@ func MoveFile(sourcePath, destPath, filename string) error {
 		destPath = destPath + "/"
 	}
 
+	// Make tmp dir if does not exist
+	// for destination path
+	MakeTempDir(destPath)
+
 	sourcePath = sourcePath + filename
+	tmpDestPath := destPath + "tmp/" + filename
 	destPath = destPath + filename
+
 	inputFile, err := os.Open(sourcePath)
 	if err != nil {
 		return fmt.Errorf("couldn't open source file: %s", err)
 	}
-	outputFile, err := os.Create(destPath)
+	outputFile, err := os.Create(tmpDestPath)
 	if err != nil {
 		inputFile.Close()
 		return fmt.Errorf("couldn't open dest file: %s", err)
@@ -65,6 +71,21 @@ func MoveFile(sourcePath, destPath, filename string) error {
 	err = os.Remove(sourcePath)
 	if err != nil {
 		return fmt.Errorf("failed removing original file: %s", err)
+	}
+
+	// Rename dest path from tmp to root
+	err = os.Rename(tmpDestPath, destPath)
+	if err != nil {
+		return fmt.Errorf("failed renaming final file: %s", err)
+	}
+	return nil
+}
+
+func MakeTempDir(dir string) error {
+	dir = dir + "tmp"
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err := os.Mkdir(dir, 0777)
+		return fmt.Errorf("failed to make tmp folder: %s", err)
 	}
 	return nil
 }
