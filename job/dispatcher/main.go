@@ -338,6 +338,12 @@ func CleanFinalTempdDir() error {
 }
 
 func RemoveStagnantTempFiles(dir string) error {
+	// make empty tmp dir
+	err := os.MkdirAll(dir, 0777)
+	if err != nil {
+		return err
+	}
+
 	// make log file
 	timeNow := time.Now()
 	timeNowFormatted := timeNow.Format(time.RFC3339)
