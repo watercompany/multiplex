@@ -34,9 +34,29 @@ func GetJob() (*workerclient.CallWorkerConfig, error) {
 	return workerCfg, nil
 }
 
-func GetNumberOfCurrentJobs() (int, error) {
+func GetNumberOfActiveJobs(databaseAddress string) (int, error) {
 	ctx := context.Background()
-	dbClient, err := ConnectDB("")
+	dbClient, err := ConnectDB(databaseAddress)
+	if err != nil {
+		return 0, err
+	}
+
+	countStr, err := get(ctx, dbClient, activeJobs)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := strconv.Atoi(countStr)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func GetNumberOfQueuedJobs(databaseAddress string) (int, error) {
+	ctx := context.Background()
+	dbClient, err := ConnectDB(databaseAddress)
 	if err != nil {
 		return 0, err
 	}
@@ -54,7 +74,7 @@ func GetNumberOfCurrentJobs() (int, error) {
 	return count, nil
 }
 
-func ListAllJobs() (map[string]string, error) {
+func ListAllJobs(databaseAddress string) (map[string]string, error) {
 	ctx := context.Background()
 	dbClient, err := ConnectDB("")
 	if err != nil {
@@ -67,4 +87,34 @@ func ListAllJobs() (map[string]string, error) {
 	}
 
 	return kv, nil
+}
+
+func IncrActiveJobs() error {
+	ctx := context.Background()
+	dbClient, err := ConnectDB("")
+	if err != nil {
+		return err
+	}
+
+	_, err = incrCounter(ctx, dbClient, activeJobs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DecrActiveJobs() error {
+	ctx := context.Background()
+	dbClient, err := ConnectDB("")
+	if err != nil {
+		return err
+	}
+
+	_, err = decrCounter(ctx, dbClient, activeJobs)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

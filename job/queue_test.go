@@ -37,7 +37,7 @@ func TestQueue_AddJob(t *testing.T) {
 				t.Fatalf("err: %v\n", err)
 			}
 
-			kv, err := job.ListAllJobs()
+			kv, err := job.ListAllJobs("")
 			if err != nil {
 				t.Fatalf("err: %v\n", err)
 			}
@@ -87,7 +87,7 @@ func TestQueue_GetJob(t *testing.T) {
 			}
 			t.Logf("got job: %v\n", wCfg)
 
-			kv, err := job.ListAllJobs()
+			kv, err := job.ListAllJobs("")
 			if err != nil {
 				t.Fatalf("err: %v\n", err)
 			}
@@ -131,7 +131,7 @@ func TestQueue_ListAllJob(t *testing.T) {
 				}
 			}
 
-			kv, err := job.ListAllJobs()
+			kv, err := job.ListAllJobs("")
 			if err != nil {
 				t.Fatalf("err: %v\n", err)
 			}
@@ -144,7 +144,7 @@ func TestQueue_ListAllJob(t *testing.T) {
 	}
 }
 
-func TestQueue_GetCurrentNumberOfJobs(t *testing.T) {
+func TestQueue_GetNumberOfQueuedJobs(t *testing.T) {
 	tests := []struct {
 		scenario     string
 		workerCfg    workerclient.CallWorkerConfig
@@ -177,7 +177,7 @@ func TestQueue_GetCurrentNumberOfJobs(t *testing.T) {
 				}
 			}
 
-			kv, err := job.ListAllJobs()
+			kv, err := job.ListAllJobs("")
 			if err != nil {
 				t.Fatalf("err: %v\n", err)
 			}
@@ -187,12 +187,68 @@ func TestQueue_GetCurrentNumberOfJobs(t *testing.T) {
 				t.Logf("%v:%v\n", key, val)
 			}
 
-			numberOfJobs, err := job.GetNumberOfCurrentJobs()
+			numberOfJobs, err := job.GetNumberOfQueuedJobs("")
 			if err != nil {
 				t.Fatalf("err: %v\n", err)
 			}
 
-			t.Logf("Number of Jobs: %v\n", numberOfJobs)
+			t.Logf("Number of Queued Jobs: %v\n", numberOfJobs)
+			if tc.numberOfJobs != numberOfJobs {
+				t.Errorf("want count %v, got %v", tc.numberOfJobs, numberOfJobs)
+			}
+		})
+	}
+}
+
+func TestQueue_GetNumberOfActiveJobs(t *testing.T) {
+	tests := []struct {
+		scenario     string
+		workerCfg    workerclient.CallWorkerConfig
+		numberOfJobs int
+	}{
+		{
+			scenario: "default",
+			workerCfg: workerclient.CallWorkerConfig{
+				LogName:  "testLog",
+				TaskName: "pos",
+				WorkerCfg: worker.WorkerCfg{
+					ExecDir:   "/execDir",
+					OutputDir: "/OutDir",
+				},
+			},
+			numberOfJobs: 6,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.scenario, func(t *testing.T) {
+			flushDB(t)
+
+			for i := 1; i <= tc.numberOfJobs; i++ {
+				saveCfg := tc.workerCfg
+				saveCfg.LogName = tc.workerCfg.LogName + fmt.Sprintf("-%v", i)
+				err := job.IncrActiveJobs()
+				if err != nil {
+					t.Fatalf("err: %v\n", err)
+				}
+			}
+
+			kv, err := job.ListAllJobs("")
+			if err != nil {
+				t.Fatalf("err: %v\n", err)
+			}
+
+			t.Logf("All data inside database:\n")
+			for key, val := range kv {
+				t.Logf("%v:%v\n", key, val)
+			}
+
+			numberOfJobs, err := job.GetNumberOfActiveJobs("")
+			if err != nil {
+				t.Fatalf("err: %v\n", err)
+			}
+
+			t.Logf("Number of Active Jobs: %v\n", numberOfJobs)
 			if tc.numberOfJobs != numberOfJobs {
 				t.Errorf("want count %v, got %v", tc.numberOfJobs, numberOfJobs)
 			}

@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	activeJobs   = "active-jobs"
 	jobLastIndex = "job-last-index"
 	dbAddress    = "localhost:6379"
 )
@@ -108,8 +109,8 @@ func del(ctx context.Context, client *redis.Client, key string) error {
 	return nil
 }
 
-func incrCounter(ctx context.Context, client *redis.Client) (string, error) {
-	val, err := client.Incr(ctx, jobLastIndex).Result()
+func incrCounter(ctx context.Context, client *redis.Client, key string) (string, error) {
+	val, err := client.Incr(ctx, key).Result()
 	if err != nil {
 		return "", err
 	}
@@ -117,8 +118,8 @@ func incrCounter(ctx context.Context, client *redis.Client) (string, error) {
 	return fmt.Sprintf("%v", val), nil
 }
 
-func decrCounter(ctx context.Context, client *redis.Client) (string, error) {
-	val, err := client.Decr(ctx, jobLastIndex).Result()
+func decrCounter(ctx context.Context, client *redis.Client, key string) (string, error) {
+	val, err := client.Decr(ctx, key).Result()
 	if err != nil {
 		return "", err
 	}
@@ -127,7 +128,7 @@ func decrCounter(ctx context.Context, client *redis.Client) (string, error) {
 }
 
 func pushWorkerCfg(ctx context.Context, client *redis.Client, workerCfg workerclient.CallWorkerConfig) error {
-	key, err := incrCounter(ctx, client)
+	key, err := incrCounter(ctx, client, jobLastIndex)
 	if err != nil {
 		return err
 	}
@@ -171,7 +172,7 @@ func popWorkerCfg(ctx context.Context, client *redis.Client) (*workerclient.Call
 	}
 
 	// Decrement index
-	_, err = decrCounter(ctx, client)
+	_, err = decrCounter(ctx, client, jobLastIndex)
 	if err != nil {
 		return workerCfgVal, err
 	}

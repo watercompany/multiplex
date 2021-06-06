@@ -44,7 +44,7 @@ func RunDispatcher() {
 
 	for {
 		time.Sleep(5 * time.Second)
-		jobs, err := job.GetNumberOfCurrentJobs()
+		jobs, err := job.GetNumberOfQueuedJobs("")
 		if err != redis.Nil && err != nil {
 			panic(err)
 		}
@@ -61,9 +61,18 @@ func RunDispatcher() {
 			}
 
 			go func(clientCfg *client.CallWorkerConfig, currPortNum int) {
+
+				err := job.IncrActiveJobs()
+				if err != nil {
+					panic(err)
+				}
 				var res *worker.Result
 				client.CallWorker(*clientCfg, fmt.Sprintf(":%v", currPortNum), res)
 
+				err = job.DecrActiveJobs()
+				if err != nil {
+					panic(err)
+				}
 				// Append back the worker port number used so that
 				// it can be used by another go routine.
 				availPortsCh <- currPortNum

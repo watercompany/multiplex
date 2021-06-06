@@ -9,13 +9,19 @@ import (
 
 func init() {
 	rootCmd.AddCommand(viewJobsCmd)
+	viewJobsCmd.Flags().StringVar(
+		&databaseAddr,
+		"db-addr",
+		"",
+		"address of database to save jobs",
+	)
 }
 
 var viewJobsCmd = &cobra.Command{
-	Use:  "view-jobs",
+	Use:  "view-queued-jobs",
 	Long: "See all queued jobs",
 	Run: func(cmd *cobra.Command, args []string) {
-		kv, err := job.ListAllJobs()
+		kv, err := job.ListAllJobs(databaseAddr)
 		if err != nil {
 			fmt.Printf("unable to add job: %v", err)
 			return
