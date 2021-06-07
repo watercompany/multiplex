@@ -13,6 +13,8 @@ var (
 	LogName      string
 	TaskName     string
 	databaseAddr string
+	localDrive   string
+	finalDrive   string
 )
 
 func init() {
@@ -37,6 +39,20 @@ func init() {
 		"",
 		"address of database to save jobs",
 	)
+
+	addJobCmd.Flags().StringVar(
+		&localDrive,
+		"local-drive",
+		"",
+		"name of local drive for temp plot files",
+	)
+
+	addJobCmd.Flags().StringVar(
+		&localDrive,
+		"final-drive",
+		"",
+		"name of final drive for final plot files",
+	)
 }
 
 var addJobCmd = &cobra.Command{
@@ -52,7 +68,21 @@ var addJobCmd = &cobra.Command{
 		var addArgs []string
 		var posCfg worker.POSCfg
 		if TaskName == "pos" {
-			addArgs, err = worker.GetPOSArgs()
+			var tempDir string = ""
+			var temp2Dir string = ""
+			var finalDir string = ""
+			if localDrive != "" {
+				tempDir = fmt.Sprintf("/mnt/%s/plotfiles/temp", localDrive)
+				temp2Dir = fmt.Sprintf("/mnt/%s/plotfiles/temp2", localDrive)
+				finalDir = fmt.Sprintf("/mnt/%s/plotfiles/final", localDrive)
+			}
+
+			var finalDestDir string = ""
+			if finalDrive != "" {
+				finalDestDir = fmt.Sprintf("/mnt/%s", finalDrive)
+			}
+
+			addArgs, err = worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
 			if err != nil {
 				panic(err)
 			}
@@ -60,6 +90,10 @@ var addJobCmd = &cobra.Command{
 			_, err := posCfg.GetPOSCfg()
 			if err != nil {
 				panic(err)
+			}
+
+			if finalDestDir != "" {
+				posCfg.FinalDestDir = finalDestDir
 			}
 		}
 

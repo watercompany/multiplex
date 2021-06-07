@@ -42,7 +42,10 @@ func TestGetPOSCfg(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.scenario, func(t *testing.T) {
-			args, err := worker.GetPOSArgs()
+			tempDir := "/mnt/ssd1/plotfiles/temp"
+			temp2Dir := "/mnt/ssd1/plotfiles/temp2"
+			finalDir := "/mnt/ssd1/plotfiles/final"
+			args, err := worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
 			if err != nil {
 				t.Errorf("err=%v\n", err)
 			}

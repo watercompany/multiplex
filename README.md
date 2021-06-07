@@ -7,6 +7,7 @@ go mod verify
 go mod tidy
 go mod download
 ```
+- Must setup chia-blockchain before using Multiplex
 
 ## Manual Usage 
 Follow these steps for manual usage:
@@ -60,12 +61,17 @@ go run main.go add-job  --task=test --log-name=test-drive-1
 
 For Proof of Space exec
 ```
-go run main.go add-job  --task=pos --log-name=test-drive-1 
+go run main.go add-job  --task=pos --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 --final-drive=skynas-1
 ```
 
 ### View Queued Jobs
 ```
-go run main.go view-jobs
+go run main.go view-queued-jobs
+```
+
+### View Active Jobs
+```
+go run main.go view-active-jobs
 ```
 
 ## Docker Usage 
