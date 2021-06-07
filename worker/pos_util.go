@@ -21,6 +21,7 @@ type POSCfg struct {
 	FinalDestDir    string `yaml:"final_dest_dir"`
 	FileName        string `yaml:"filename"`
 	Size            string `yaml:"size"`
+	SizeInt         int    `json:"size"`
 	PlotMemo        string `yaml:"plot_memo"`
 	PlotID          string `yaml:"plot_id"`
 	Buffer          string `yaml:"buffer"`
