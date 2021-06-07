@@ -19,10 +19,10 @@ type POSCfg struct {
 	Temp2Dir        string `yaml:"tmp2_dir"`
 	FinalDir        string `yaml:"final_dir"`
 	FinalDestDir    string `yaml:"final_dest_dir"`
-	FileName        string `yaml:"filename"`
+	FileName        string `yaml:"filename" json:"filename"`
 	Size            string `yaml:"size"`
-	PlotMemo        string `yaml:"plot_memo"`
-	PlotID          string `yaml:"plot_id"`
+	PlotMemo        string `yaml:"plot_memo" json:"plot_memo"`
+	PlotID          string `yaml:"plot_id" json:"plot_id"`
 	Buffer          string `yaml:"buffer"`
 	StripeSize      string `yaml:"stripe_size"`
 	NumThreads      string `yaml:"num_threads"`
