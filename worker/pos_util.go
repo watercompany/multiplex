@@ -21,7 +21,6 @@ type POSCfg struct {
 	FinalDestDir    string `yaml:"final_dest_dir"`
 	FileName        string `yaml:"filename"`
 	Size            string `yaml:"size"`
-	SizeInt         int    `json:"size"`
 	PlotMemo        string `yaml:"plot_memo"`
 	PlotID          string `yaml:"plot_id"`
 	Buffer          string `yaml:"buffer"`
@@ -31,6 +30,12 @@ type POSCfg struct {
 	NoBitField      string `yaml:"nobitfield"`
 	FarmerPublicKey string `yaml:"farmer_public_key"`
 	PoolPublicKey   string `yaml:"pool_public_key"`
+
+	SizeInt       int  `json:"size"`
+	BufferInt     int  `json:"buffer"`
+	StripeSizeInt int  `json:"stripe_size"`
+	NumThreadsInt int  `json:"num_threads"`
+	NoBitFieldInt bool `json:"nobitfield"`
 }
 
 func (pc *POSCfg) GetPOSCfg() (*POSCfg, error) {
