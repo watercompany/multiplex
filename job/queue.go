@@ -76,7 +76,7 @@ func GetNumberOfQueuedJobs(databaseAddress string) (int, error) {
 
 func ListAllJobs(databaseAddress string) (map[string]string, error) {
 	ctx := context.Background()
-	dbClient, err := ConnectDB("")
+	dbClient, err := ConnectDB(databaseAddress)
 	if err != nil {
 		return map[string]string{}, err
 	}
