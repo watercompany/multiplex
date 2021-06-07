@@ -48,7 +48,7 @@ func init() {
 	)
 
 	addJobCmd.Flags().StringVar(
-		&localDrive,
+		&finalDrive,
 		"final-drive",
 		"",
 		"name of final drive for final plot files",
