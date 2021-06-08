@@ -93,6 +93,9 @@ var addJobCmd = &cobra.Command{
 			}
 
 			if finalDestDir != "" {
+				posCfg.TempDir = tempDir
+				posCfg.Temp2Dir = temp2Dir
+				posCfg.FinalDir = finalDir
 				posCfg.FinalDestDir = finalDestDir
 			}
 		}
