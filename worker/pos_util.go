@@ -60,12 +60,12 @@ func (pc *POSCfg) GetPOSCfg() (*POSCfg, error) {
 	return pc, nil
 }
 
-func GetPOSArgs(tempDir, temp2Dir, finalDir string) ([]string, error) {
+func GetPOSArgs(tempDir, temp2Dir, finalDir string) ([]string, POSCfg, error) {
 	var args []string
 	var posCfg POSCfg
 	_, err := posCfg.GetPOSCfg()
 	if err != nil {
-		return []string{}, err
+		return []string{}, POSCfg{}, err
 	}
 
 	if tempDir != "" {
@@ -92,7 +92,7 @@ func GetPOSArgs(tempDir, temp2Dir, finalDir string) ([]string, error) {
 	args = append(args, "--buckets", posCfg.NumBuckets)
 	args = append(args, "--nobitfield", posCfg.NoBitField)
 
-	return args, nil
+	return args, posCfg, nil
 }
 
 func GetTempAndFinalDir() (string, string, string, string, error) {
