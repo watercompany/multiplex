@@ -82,12 +82,7 @@ var addJobCmd = &cobra.Command{
 				finalDestDir = fmt.Sprintf("/mnt/%s", finalDrive)
 			}
 
-			addArgs, err = worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
-			if err != nil {
-				panic(err)
-			}
-
-			_, err := posCfg.GetPOSCfg()
+			addArgs, posCfg, err = worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
 			if err != nil {
 				panic(err)
 			}
