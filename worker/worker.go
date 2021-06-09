@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/henrylee2cn/erpc/v6"
@@ -53,10 +54,18 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error not enough free space: %v MB", freeSpaceInMB))
 	}
 
-	err = RunExecutable(finalArg...)
+	plotGraphData, err := RunExecutable(finalArg...)
 	if err != nil {
 		log.Printf("error running exec: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error running exec: %v", err))
+	}
+
+	// Save plot graph data json
+	jsonOutputName := fmt.Sprintf("%v-%v-graph-data", timeNowFormatted, args.LogName)
+	err = SavePlotGraphDataToJSON(plotGraphData, wCfg.OutputDir+jsonOutputName)
+	if err != nil {
+		log.Printf("error saving plot graph data json: %v", err)
+		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error saving plot graph data json: %v", err))
 	}
 
 	startMoveTime := time.Now()
@@ -84,45 +93,61 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	return res, nil
 }
 
-func RunExecutable(args ...string) error {
+func RunExecutable(args ...string) (PlotGraph, error) {
+	var plotGraph PlotGraph
+
 	log.Printf("Command executed: time %v\n", args)
 	cmd := exec.Command("time", args...)
 
 	// create a pipe for the output of the script
 	cmdReader, err := cmd.StdoutPipe()
 	if err != nil {
-		return fmt.Errorf("error creating StdoutPipe for cmd: %v", err)
+		return PlotGraph{}, fmt.Errorf("error creating StdoutPipe for cmd: %v", err)
 	}
 	cmdErrReader, err := cmd.StderrPipe()
 	if err != nil {
-		return fmt.Errorf("error creating StderrPipe for cmd: %v", err)
+		return PlotGraph{}, fmt.Errorf("error creating StderrPipe for cmd: %v", err)
 	}
 
 	scanner := bufio.NewScanner(cmdReader)
 	errScanner := bufio.NewScanner(cmdErrReader)
 	go func() {
+		var scannedStr string
 		for scanner.Scan() {
-			log.Printf("%s\n", scanner.Text())
+			scannedStr = scanner.Text()
+			log.Printf("%s\n", scannedStr)
+
+			if strings.Contains(scannedStr, phaseTemplate) {
+				phase, hours, err := ParseGraphData(scannedStr)
+				if err != nil {
+					log.Printf("err=%s\n", err)
+					return
+				}
+
+				// append data
+				plotGraph.Data = append(plotGraph.Data, PlotData{Phase: phase, Hours: hours})
+			}
 		}
 
 		for errScanner.Scan() {
-			log.Printf("%s\n", errScanner.Text())
+			scannedStr = errScanner.Text()
+			log.Printf("%s\n", scannedStr)
 		}
 	}()
 
 	err = cmd.Start()
 	if err != nil {
 		log.Printf("error starting cmd:%v\n", err)
-		return fmt.Errorf("error starting cmd: %v", err)
+		return PlotGraph{}, fmt.Errorf("error starting cmd: %v", err)
 	}
 
 	log.Printf("Process PID: %v\n", cmd.Process.Pid)
 	err = cmd.Wait()
 	if err != nil {
-		return fmt.Errorf("error waiting for cmd: %v", err)
+		return PlotGraph{}, fmt.Errorf("error waiting for cmd: %v", err)
 	}
 
-	return nil
+	return plotGraph, nil
 }
 
 func moveFinalPlot(args *Args) error {
