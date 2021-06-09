@@ -45,7 +45,7 @@ func TestGetPOSCfg(t *testing.T) {
 			tempDir := "/mnt/ssd1/plotfiles/temp"
 			temp2Dir := "/mnt/ssd1/plotfiles/temp2"
 			finalDir := "/mnt/ssd1/plotfiles/final"
-			args, err := worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
+			args, _, err := worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
 			if err != nil {
 				t.Errorf("err=%v\n", err)
 			}
