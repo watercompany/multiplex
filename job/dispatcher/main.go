@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -30,17 +31,34 @@ func init() {
 func main() {
 	flag.Parse()
 
-	// Clean out temp dirs
-	err := CleanOutTempDirs()
+	// Setup log
+	timeNow := time.Now()
+	timeNowFormatted := timeNow.Format(time.RFC3339)
+	outputName := fmt.Sprintf("%v-dispatcher-log", timeNowFormatted)
+	f, err := os.OpenFile("./output/"+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
+		log.Printf("error opening file: %v", err)
+		return
+	}
+	defer f.Close()
+	log.SetOutput(f)
+
+	// Clean out temp dirs
+	err = CleanOutTempDirs()
+	if err != nil {
+		log.Printf("error cleaning out temp dirs: %v", err)
 		panic(err)
 	}
+	fmt.Printf("Finished cleaning local temp files.\n")
 
 	// Clean out final temp dirs
 	err = CleanFinalTempdDir()
 	if err != nil {
+		log.Printf("error cleaning out final temp dirs: %v", err)
 		panic(err)
 	}
+	fmt.Printf("Finished cleaning final destination temp files.\n")
+	fmt.Printf("Running dispatcher now...\n")
 
 	RunDispatcher()
 }
@@ -61,6 +79,7 @@ func RunDispatcher() {
 		time.Sleep(5 * time.Second)
 		jobs, err := job.GetNumberOfQueuedJobs("")
 		if err != redis.Nil && err != nil {
+			log.Printf("error getting number of queued jobs: %v", err)
 			panic(err)
 		}
 
@@ -72,13 +91,14 @@ func RunDispatcher() {
 
 			clientCfg, err := job.GetJob()
 			if err != nil {
+				log.Printf("error getting job: %v", err)
 				panic(err)
 			}
 
 			go func(clientCfg *client.CallWorkerConfig, currPortNum int) {
-
 				err := job.IncrActiveJobs()
 				if err != nil {
+					log.Printf("error incrementing active jobs: %v", err)
 					panic(err)
 				}
 				var res *worker.Result
@@ -86,6 +106,7 @@ func RunDispatcher() {
 
 				err = job.DecrActiveJobs()
 				if err != nil {
+					log.Printf("error decrementing active jobs: %v", err)
 					panic(err)
 				}
 				// Append back the worker port number used so that

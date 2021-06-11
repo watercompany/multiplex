@@ -252,6 +252,22 @@ func TestQueue_GetNumberOfActiveJobs(t *testing.T) {
 			if tc.numberOfJobs != numberOfJobs {
 				t.Errorf("want count %v, got %v", tc.numberOfJobs, numberOfJobs)
 			}
+
+			// Decrement once
+			err = job.DecrActiveJobs()
+			if err != nil {
+				t.Fatalf("err: %v\n", err)
+			}
+
+			numberOfJobs, err = job.GetNumberOfActiveJobs("")
+			if err != nil {
+				t.Fatalf("err: %v\n", err)
+			}
+
+			t.Logf("Number of Active Jobs: %v\n", numberOfJobs)
+			if tc.numberOfJobs-1 != numberOfJobs {
+				t.Errorf("want count %v, got %v", tc.numberOfJobs-1, numberOfJobs)
+			}
 		})
 	}
 }
