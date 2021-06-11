@@ -97,16 +97,19 @@ func RunMover() error {
 				}
 
 				go func(localFinalDir, finalDir, fileName string) {
-					log.Printf("Moving file %v from %v to %v", localFinalDir, finalDir, fileName)
+					log.Printf("Moving file %v from %v to %v", fileName, localFinalDir, finalDir)
 					// Moves and Deletes
 					err = mover.MoveFile(localFinalDir, finalDir, fileName)
 					if err != nil {
-						log.Printf("err moving file %v from %v to %v: %v", localFinalDir, finalDir, fileName, err)
+						log.Printf("err moving file %v from %v to %v: %v", fileName, localFinalDir, finalDir, err)
 						return
 					}
-					log.Printf("Finished moving file %v from %v to %v", localFinalDir, finalDir, fileName)
+					log.Printf("Finished moving file %v from %v to %v", fileName, localFinalDir, finalDir)
 				}(localFinalDir, finalDir, fileName)
 
+				// sleep 5 seconds
+				// let MoveFile make transfer lock first
+				time.Sleep(5 * time.Second)
 			}
 		}
 	}
