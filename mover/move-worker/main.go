@@ -96,11 +96,17 @@ func RunMover() error {
 					continue
 				}
 
-				// Moves and Deletes
-				err = mover.MoveFile(localFinalDir, finalDir, fileName)
-				if err != nil {
-					return err
-				}
+				go func(localFinalDir, finalDir, fileName string) {
+					log.Printf("Moving file %v from %v to %v", localFinalDir, finalDir, fileName)
+					// Moves and Deletes
+					err = mover.MoveFile(localFinalDir, finalDir, fileName)
+					if err != nil {
+						log.Printf("err moving file %v from %v to %v: %v", localFinalDir, finalDir, fileName, err)
+						return
+					}
+					log.Printf("Finished moving file %v from %v to %v", localFinalDir, finalDir, fileName)
+				}(localFinalDir, finalDir, fileName)
+
 			}
 		}
 	}
