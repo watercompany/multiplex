@@ -2,7 +2,6 @@ package worker
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -68,17 +67,6 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error saving plot graph data json: %v", err))
 	}
 
-	startMoveTime := time.Now()
-	// Move
-	// Copy final plot to somewhere
-	// Delete final plot
-	err = moveFinalPlot(args)
-	if err != nil {
-		log.Printf("error moving final plot: %v", err)
-		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error moving final plot: %v", err))
-	}
-	log.Printf("Final Plot has been moved to final destination dir.\nMoving Plot Took: %v minutes\n", time.Since(startMoveTime).Minutes())
-
 	_, err = paramLog.Write([]byte(fmt.Sprintf("Time Finished: %v\n", time.Now())))
 	if err != nil {
 		log.Fatal(err)
@@ -102,10 +90,12 @@ func RunExecutable(args ...string) (PlotGraph, error) {
 	// create a pipe for the output of the script
 	cmdReader, err := cmd.StdoutPipe()
 	if err != nil {
+		log.Printf("error creating StdoutPipe for cmd: %v", err)
 		return PlotGraph{}, fmt.Errorf("error creating StdoutPipe for cmd: %v", err)
 	}
 	cmdErrReader, err := cmd.StderrPipe()
 	if err != nil {
+		log.Printf("error creating StderrPipe for cmd: %v", err)
 		return PlotGraph{}, fmt.Errorf("error creating StderrPipe for cmd: %v", err)
 	}
 
@@ -144,30 +134,9 @@ func RunExecutable(args ...string) (PlotGraph, error) {
 	log.Printf("Process PID: %v\n", cmd.Process.Pid)
 	err = cmd.Wait()
 	if err != nil {
+		log.Printf("error waiting for cmd: %v", err)
 		return PlotGraph{}, fmt.Errorf("error waiting for cmd: %v", err)
 	}
 
 	return plotGraph, nil
-}
-
-func moveFinalPlot(args *Args) error {
-	// Check src path size
-	dirSize, err := mover.DirSizeInMB(args.POSCfg.FinalDir)
-	if err != nil {
-		return err
-	}
-
-	// Check if destpath have available size for that
-	destFreeSpace := mover.GetFreeDiskSpaceInMB(args.POSCfg.FinalDestDir)
-	if dirSize > int64(destFreeSpace) {
-		return errors.New("file size greater than destination free space")
-	}
-
-	// Moves and Deletes
-	err = mover.MoveFile(args.POSCfg.FinalDir, args.POSCfg.FinalDestDir, args.POSCfg.FileName)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
