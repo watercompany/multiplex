@@ -14,8 +14,9 @@ Follow these steps for manual usage:
 1. Deploy workers first
 2. Run Redis Database Instance
 3. Run Dispatcher
-4. Give Jobs to Workers
-5. View Queued Jobs
+4. Run Mover
+5. Give Jobs to Workers
+6. View Queued Jobs
 
 Or run automated script that follows step 1-3:
 WORKERS=[number of workers] make run-multiplex
@@ -44,6 +45,16 @@ go run ./job/dispatcher/main.go -workers=[number of available workers]
 ###### Example
 ```
 go run ./job/dispatcher/main.go -workers=8 &
+```
+
+### Run Mover
+Use this command to run the dispatcher.
+```
+go run ./mover/move-worker/main.go
+```
+###### Example
+```
+go run ./mover/move-worker/main.go &
 ```
 
 ### Give job to worker
