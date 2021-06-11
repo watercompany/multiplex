@@ -5,35 +5,12 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
-// func Mover() {
-// 	srcPath := "/Users/kenjehofilena/Desktop"
-// 	destPath := "/Users/kenjehofilena/Documents"
-// 	for {
-// 		fc, err := fileCount(srcPath)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-
-// 		if fc > 0 {
-// 			// Check src path size
-// 			dirSize, err := DirSizeInMB(srcPath)
-// 			if err != nil {
-// 				panic(err)
-// 			}
-
-// 			// Check if destpath have available size for that
-// 			destFreeSpace := getFreeDiskSpaceInMB(destPath)
-// 			if dirSize > int64(destFreeSpace) {
-// 				panic("file size greater than destination free space")
-// 			}
-
-// 			// Move
-// 			MoveFile(srcPath, destPath)
-// 		}
-// 	}
-// }
+const (
+	transferLockName = "transfer-lock"
+)
 
 func MoveFile(sourcePath, destPath, filename string) error {
 	if !strings.HasSuffix(sourcePath, "/") {
@@ -44,15 +21,36 @@ func MoveFile(sourcePath, destPath, filename string) error {
 		destPath = destPath + "/"
 	}
 
+	// Make moving dir if does not exist
+	// for source path
+	MakeTempDir(sourcePath, "moving")
+
 	// Make tmp dir if does not exist
 	// for destination path
-	MakeTempDir(destPath)
+	MakeTempDir(destPath, "tmp")
 
+	tmpSrcPath := sourcePath + "moving/" + filename
 	sourcePath = sourcePath + filename
-	tmpDestPath := destPath + "tmp/" + filename
+	destDir := destPath
+	tmpDestPath := destDir + "tmp/" + filename
 	destPath = destPath + filename
 
-	inputFile, err := os.Open(sourcePath)
+	// Rename source path from root to moving
+	err := os.Rename(sourcePath, tmpSrcPath)
+	if err != nil {
+		return fmt.Errorf("failed renaming final file: %s", err)
+	}
+
+	// Create lock files
+	// transfer-lock-[unix-time]
+	transferLock := fmt.Sprintf("%s-%v", transferLockName, time.Now().Unix())
+	tfl, err := os.Create(destDir + transferLock)
+	if err != nil {
+		return fmt.Errorf("failed creating transfer lock file: %s", err)
+	}
+	tfl.Close()
+
+	inputFile, err := os.Open(tmpSrcPath)
 	if err != nil {
 		return fmt.Errorf("couldn't open source file: %s", err)
 	}
@@ -68,7 +66,7 @@ func MoveFile(sourcePath, destPath, filename string) error {
 		return fmt.Errorf("writing to output file failed: %s", err)
 	}
 	// The copy was successful, so now delete the original file
-	err = os.Remove(sourcePath)
+	err = os.Remove(tmpSrcPath)
 	if err != nil {
 		return fmt.Errorf("failed removing original file: %s", err)
 	}
@@ -78,14 +76,21 @@ func MoveFile(sourcePath, destPath, filename string) error {
 	if err != nil {
 		return fmt.Errorf("failed renaming final file: %s", err)
 	}
+
+	// Delete transfer lock file
+	err = os.Remove(destDir + transferLock)
+	if err != nil {
+		return fmt.Errorf("failed deleting transfer lock file: %s", err)
+	}
+
 	return nil
 }
 
-func MakeTempDir(dir string) error {
-	dir = dir + "tmp"
+func MakeTempDir(dir string, name string) error {
+	dir = dir + name
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		err := os.Mkdir(dir, 0777)
-		return fmt.Errorf("failed to make tmp folder: %s", err)
+		return fmt.Errorf("failed to make folder: %s", err)
 	}
 	return nil
 }
