@@ -11,21 +11,46 @@ import (
 )
 
 func FileCount(path string) (int, error) {
-	d, e := os.ReadDir(path)
-	if e != nil {
-		return 0, fmt.Errorf("error counting files: %v", e)
+	var dirs []fs.DirEntry
+	var err error
+	// TODO: find better fix for readdirent error
+	// with using Readdirnames on cifs mounts
+	readDirPass := true
+	for readDirPass {
+		dirs, err = os.ReadDir(path)
+		if err == nil {
+			readDirPass = false
+			continue
+		}
+
+		if !strings.Contains(err.Error(), "readdirent") {
+			return 0, fmt.Errorf("error counting files: %v", err)
+		}
 	}
-	return len(d), nil
+
+	return len(dirs), nil
 }
 
 func FileCountSubString(path string, subStr string) (int, error) {
 	count := 0
-	d, e := os.ReadDir(path)
-	if e != nil {
-		return 0, fmt.Errorf("error counting files: %v", e)
+	var dirs []fs.DirEntry
+	var err error
+	// TODO: find better fix for readdirent error
+	// with using Readdirnames on cifs mounts
+	readDirPass := true
+	for readDirPass {
+		dirs, err = os.ReadDir(path)
+		if err == nil {
+			readDirPass = false
+			continue
+		}
+
+		if !strings.Contains(err.Error(), "readdirent") {
+			return 0, fmt.Errorf("error counting files: %v", err)
+		}
 	}
 
-	for _, dir := range d {
+	for _, dir := range dirs {
 		if strings.Contains(dir.Name(), subStr) {
 			count++
 		}
@@ -35,9 +60,21 @@ func FileCountSubString(path string, subStr string) (int, error) {
 }
 
 func GetDirs(path string) ([]fs.DirEntry, error) {
-	dirs, err := os.ReadDir(path)
-	if err != nil {
-		return []fs.DirEntry{}, fmt.Errorf("error counting files: %v", err)
+	var dirs []fs.DirEntry
+	var err error
+	// TODO: find better fix for readdirent error
+	// with using Readdirnames on cifs mounts
+	readDirPass := true
+	for readDirPass {
+		dirs, err = os.ReadDir(path)
+		if err == nil {
+			readDirPass = false
+			continue
+		}
+
+		if !strings.Contains(err.Error(), "readdirent") {
+			return []fs.DirEntry{}, fmt.Errorf("error counting files: %v", err)
+		}
 	}
 	return dirs, nil
 }
