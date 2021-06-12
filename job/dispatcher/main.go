@@ -51,6 +51,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("Finished cleaning local temp files.\n")
+	log.Printf("Finished cleaning local temp files.\n")
 
 	// Clean out final temp dirs
 	err = CleanFinalTempdDir()
@@ -60,6 +61,9 @@ func main() {
 	}
 	fmt.Printf("Finished cleaning final destination temp files.\n")
 	fmt.Printf("Running dispatcher now...\n")
+
+	log.Printf("Finished cleaning final destination temp files.\n")
+	log.Printf("Running dispatcher now...\n")
 
 	RunDispatcher()
 }
