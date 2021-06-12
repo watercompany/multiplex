@@ -21,13 +21,13 @@ func FileCount(path string) (int, error) {
 		dirs, err = os.ReadDir(path)
 		if err == nil {
 			readDirPass = false
-			time.Sleep(1 * time.Second)
 			continue
 		}
 
 		if !strings.Contains(err.Error(), "readdirent") {
 			return 0, fmt.Errorf("error counting files: %v", err)
 		}
+		time.Sleep(1 * time.Second)
 	}
 
 	return len(dirs), nil
@@ -44,13 +44,13 @@ func FileCountSubString(path string, subStr string) (int, error) {
 		dirs, err = os.ReadDir(path)
 		if err == nil {
 			readDirPass = false
-			time.Sleep(1 * time.Second)
 			continue
 		}
 
 		if !strings.Contains(err.Error(), "readdirent") {
 			return 0, fmt.Errorf("error counting files: %v", err)
 		}
+		time.Sleep(1 * time.Second)
 	}
 
 	for _, dir := range dirs {
@@ -72,13 +72,13 @@ func GetDirs(path string) ([]fs.DirEntry, error) {
 		dirs, err = os.ReadDir(path)
 		if err == nil {
 			readDirPass = false
-			time.Sleep(1 * time.Second)
 			continue
 		}
 
 		if !strings.Contains(err.Error(), "readdirent") {
 			return []fs.DirEntry{}, fmt.Errorf("error counting files: %v", err)
 		}
+		time.Sleep(1 * time.Second)
 	}
 	return dirs, nil
 }
