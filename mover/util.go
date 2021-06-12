@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"golang.org/x/sys/unix"
 )
@@ -20,6 +21,7 @@ func FileCount(path string) (int, error) {
 		dirs, err = os.ReadDir(path)
 		if err == nil {
 			readDirPass = false
+			time.Sleep(1 * time.Second)
 			continue
 		}
 
@@ -42,6 +44,7 @@ func FileCountSubString(path string, subStr string) (int, error) {
 		dirs, err = os.ReadDir(path)
 		if err == nil {
 			readDirPass = false
+			time.Sleep(1 * time.Second)
 			continue
 		}
 
@@ -69,6 +72,7 @@ func GetDirs(path string) ([]fs.DirEntry, error) {
 		dirs, err = os.ReadDir(path)
 		if err == nil {
 			readDirPass = false
+			time.Sleep(1 * time.Second)
 			continue
 		}
 

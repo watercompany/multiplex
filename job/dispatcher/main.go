@@ -397,6 +397,7 @@ func RemoveStagnantTempFiles(dir string) error {
 		names, err = d.Readdirnames(-1)
 		if err == nil {
 			readDirPass = false
+			time.Sleep(1 * time.Second)
 			continue
 		}
 
