@@ -403,6 +403,7 @@ func RemoveStagnantTempFiles(dir string) error {
 		if !strings.Contains(err.Error(), "readdirent") {
 			return err
 		}
+		time.Sleep(1 * time.Second)
 	}
 
 	for _, name := range names {
