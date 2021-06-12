@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -386,10 +387,24 @@ func RemoveStagnantTempFiles(dir string) error {
 		return err
 	}
 	defer d.Close()
-	names, err := d.Readdirnames(-1)
-	if err != nil {
-		return err
+
+	var names []string
+
+	// TODO: find better fix for readdirent error
+	// with using Readdirnames on cifs mounts
+	readDirPass := true
+	for readDirPass {
+		names, err = d.Readdirnames(-1)
+		if err == nil {
+			readDirPass = false
+			continue
+		}
+
+		if !strings.Contains(err.Error(), "readdirent") {
+			return err
+		}
 	}
+
 	for _, name := range names {
 		path := filepath.Join(dir, name)
 		file, err := os.Stat(path)
