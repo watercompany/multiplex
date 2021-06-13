@@ -95,11 +95,10 @@ func RunMover() error {
 			}
 
 			for _, dir := range dirs {
-				if dir.IsDir() || !strings.Contains(dir.Name(), "plot") {
+				fileName := dir.Name()
+				if dir.IsDir() || !strings.Contains(fileName, "plot") || strings.Contains(fileName, "tmp") {
 					continue
 				}
-
-				fileName := dir.Name()
 
 				// Get src file size
 				fileSize, err := mover.FileSizeInMB(localFinalDir + "/" + fileName)
