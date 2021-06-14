@@ -53,7 +53,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error not enough free space: %v MB", freeSpaceInMB))
 	}
 
-	plotGraphData, err := RunExecutable(finalArg...)
+	plotGraphData, err := RunExecutable(args.TaskName, finalArg...)
 	if err != nil {
 		log.Printf("error running exec: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error running exec: %v", err))
@@ -81,7 +81,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	return res, nil
 }
 
-func RunExecutable(args ...string) (PlotGraph, error) {
+func RunExecutable(taskName string, args ...string) (PlotGraph, error) {
 	var plotGraph PlotGraph
 
 	log.Printf("Command executed: time %v\n", args)
@@ -101,14 +101,14 @@ func RunExecutable(args ...string) (PlotGraph, error) {
 
 	scanner := bufio.NewScanner(cmdReader)
 	errScanner := bufio.NewScanner(cmdErrReader)
-	go func() {
+	go func(taskName string) {
 		var scannedStr string
 		for scanner.Scan() {
 			scannedStr = scanner.Text()
 			log.Printf("%s\n", scannedStr)
 
-			if strings.Contains(scannedStr, phaseTemplate) {
-				phase, hours, err := ParseGraphData(scannedStr)
+			if strings.Contains(scannedStr, phaseStringTemplateV2) {
+				phase, hours, err := ParseGraphData(scannedStr, taskName)
 				if err != nil {
 					log.Printf("err=%s\n", err)
 					return
@@ -123,7 +123,7 @@ func RunExecutable(args ...string) (PlotGraph, error) {
 			scannedStr = errScanner.Text()
 			log.Printf("%s\n", scannedStr)
 		}
-	}()
+	}(taskName)
 
 	err = cmd.Start()
 	if err != nil {
