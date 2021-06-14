@@ -65,34 +65,42 @@ var addJobCmd = &cobra.Command{
 			panic(err)
 		}
 
+		var tempDir string = ""
+		var temp2Dir string = ""
+		var finalDir string = ""
+		if localDrive != "" {
+			tempDir = fmt.Sprintf("/mnt/%s/plotfiles/temp", localDrive)
+			temp2Dir = fmt.Sprintf("/mnt/%s/plotfiles/temp2", localDrive)
+			finalDir = fmt.Sprintf("/mnt/%s/plotfiles/final", localDrive)
+		}
+
+		var finalDestDir string = ""
+		if finalDrive != "" {
+			finalDestDir = fmt.Sprintf("/mnt/%s", finalDrive)
+		}
+
 		var addArgs []string
 		var posCfg worker.POSCfg
-		if TaskName == "pos" {
-			var tempDir string = ""
-			var temp2Dir string = ""
-			var finalDir string = ""
-			if localDrive != "" {
-				tempDir = fmt.Sprintf("/mnt/%s/plotfiles/temp", localDrive)
-				temp2Dir = fmt.Sprintf("/mnt/%s/plotfiles/temp2", localDrive)
-				finalDir = fmt.Sprintf("/mnt/%s/plotfiles/final", localDrive)
-			}
-
-			var finalDestDir string = ""
-			if finalDrive != "" {
-				finalDestDir = fmt.Sprintf("/mnt/%s", finalDrive)
-			}
-
+		switch TaskName {
+		case "pos":
+			wCfg.ExecDir = "./execs/ProofOfSpace"
 			addArgs, posCfg, err = worker.GetPOSArgs(tempDir, temp2Dir, finalDir)
 			if err != nil {
 				panic(err)
 			}
-
-			if finalDestDir != "" {
-				posCfg.TempDir = tempDir
-				posCfg.Temp2Dir = temp2Dir
-				posCfg.FinalDir = finalDir
-				posCfg.FinalDestDir = finalDestDir
+		case "posv2":
+			wCfg.ExecDir = "./execs/chia_plot"
+			addArgs, posCfg, err = worker.GetPOSArgs_V2(tempDir, temp2Dir, finalDir)
+			if err != nil {
+				panic(err)
 			}
+		}
+
+		if finalDestDir != "" {
+			posCfg.TempDir = tempDir
+			posCfg.Temp2Dir = temp2Dir
+			posCfg.FinalDir = finalDir
+			posCfg.FinalDestDir = finalDestDir
 		}
 
 		clientCfg := client.CallWorkerConfig{

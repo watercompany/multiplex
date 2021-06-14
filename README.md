@@ -65,14 +65,14 @@ After configuring
 go run main.go add-job --task=[task name] --log-name=[log-output-name]
 ```
 ##### Example
-For test exec
-```
-go run main.go add-job  --task=test --log-name=test-drive-1 
-```
-
 For Proof of Space exec
 ```
 go run main.go add-job  --task=pos --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 --final-drive=skynas-1
+```
+
+For Proof of Space multi-threaded exec
+```
+go run main.go add-job  --task=posv2 --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 --final-drive=skynas-1
 ```
 
 ### View Queued Jobs

@@ -95,6 +95,35 @@ func GetPOSArgs(tempDir, temp2Dir, finalDir string) ([]string, POSCfg, error) {
 	return args, posCfg, nil
 }
 
+func GetPOSArgs_V2(tempDir, temp2Dir, finalDir string) ([]string, POSCfg, error) {
+	var args []string
+	var posCfg POSCfg
+	_, err := posCfg.GetPOSCfg()
+	if err != nil {
+		return []string{}, POSCfg{}, err
+	}
+
+	if tempDir != "" {
+		posCfg.TempDir = tempDir
+	}
+	if temp2Dir != "" {
+		posCfg.Temp2Dir = temp2Dir
+	}
+	if finalDir != "" {
+		posCfg.FinalDir = finalDir
+	}
+
+	args = append(args, "--threads", posCfg.NumThreads)
+	args = append(args, "--buckets", posCfg.NumBuckets)
+	args = append(args, "--tmpdir", posCfg.TempDir)
+	args = append(args, "--tmpdir2", posCfg.Temp2Dir)
+	args = append(args, "--finaldir", posCfg.FinalDir)
+	args = append(args, "--poolkey", posCfg.PoolPublicKey)
+	args = append(args, "--farmerkey", posCfg.FarmerPublicKey)
+
+	return args, posCfg, nil
+}
+
 func GetTempAndFinalDir() (string, string, string, string, error) {
 	var temp string
 	var final string

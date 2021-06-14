@@ -19,25 +19,35 @@ type PlotData struct {
 }
 
 const (
-	phaseTemplate                = "Time for phase"
-	distanceBetweenPhaseAndHours = 5
+	phaseStringTemplate            = "Time for phase"
+	distanceBetweenPhaseAndHours   = 5
+	phaseStringTemplateV2          = "Phase"
+	distanceBetweenPhaseAndHoursV2 = 8
 )
 
-func ParseGraphData(data string) (int, float64, error) {
-	phase, err := parsePhaseNumber(data)
+func ParseGraphData(data, taskName string) (int, float64, error) {
+	phaseTemplate := phaseStringTemplate
+	hoursTemplate := distanceBetweenPhaseAndHours
+
+	if taskName == "posv2" {
+		phaseTemplate = phaseStringTemplateV2
+		hoursTemplate = distanceBetweenPhaseAndHoursV2
+	}
+
+	phase, err := parsePhaseNumber(data, phaseTemplate)
 	if err != nil {
 		return 0, 0, err
 	}
-	hours, err := parsePhaseHours(data)
+	hours, err := parsePhaseHours(data, phaseTemplate, hoursTemplate)
 	if err != nil {
 		return 0, 0, err
 	}
 	return phase, hours, nil
 }
 
-func parsePhaseNumber(data string) (int, error) {
-	index := strings.Index(data, phaseTemplate)
-	phaseStr := getValueUntilSpace(data, index+len(phaseTemplate)+1)
+func parsePhaseNumber(data, template string) (int, error) {
+	index := strings.Index(data, template)
+	phaseStr := getValueUntilSpace(data, index+len(template)+1)
 	phase, err := strconv.Atoi(phaseStr)
 	if err != nil {
 		return 0, err
@@ -45,10 +55,10 @@ func parsePhaseNumber(data string) (int, error) {
 	return phase, nil
 }
 
-func parsePhaseHours(data string) (float64, error) {
+func parsePhaseHours(data, phaseTemplate string, phaseHoursDistance int) (float64, error) {
 	index := strings.Index(data, phaseTemplate)
 
-	hoursStr := getValueUntilSpace(data, index+len(phaseTemplate)+distanceBetweenPhaseAndHours)
+	hoursStr := getValueUntilSpace(data, index+len(phaseTemplate)+phaseHoursDistance)
 	hours, err := strconv.ParseFloat(hoursStr, 32)
 	if err != nil {
 		return 0, err
