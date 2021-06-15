@@ -69,14 +69,14 @@ var addJobCmd = &cobra.Command{
 		var temp2Dir string = ""
 		var finalDir string = ""
 		if localDrive != "" {
-			tempDir = fmt.Sprintf("/mnt/%s/plotfiles/temp/", localDrive)
-			temp2Dir = fmt.Sprintf("/mnt/%s/plotfiles/temp2/", localDrive)
-			finalDir = fmt.Sprintf("/mnt/%s/plotfiles/final/", localDrive)
+			tempDir = fmt.Sprintf("/mnt/%s/plotfiles/temp", localDrive)
+			temp2Dir = fmt.Sprintf("/mnt/%s/plotfiles/temp2", localDrive)
+			finalDir = fmt.Sprintf("/mnt/%s/plotfiles/final", localDrive)
 		}
 
 		var finalDestDir string = ""
 		if finalDrive != "" {
-			finalDestDir = fmt.Sprintf("/mnt/%s/", finalDrive)
+			finalDestDir = fmt.Sprintf("/mnt/%s", finalDrive)
 		}
 
 		var addArgs []string

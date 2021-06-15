@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -111,6 +112,18 @@ func GetPOSArgs_V2(tempDir, temp2Dir, finalDir string) ([]string, POSCfg, error)
 	}
 	if finalDir != "" {
 		posCfg.FinalDir = finalDir
+	}
+
+	if !strings.HasSuffix(posCfg.TempDir, "/") {
+		posCfg.TempDir = posCfg.TempDir + "/"
+	}
+
+	if !strings.HasSuffix(posCfg.Temp2Dir, "/") {
+		posCfg.Temp2Dir = posCfg.Temp2Dir + "/"
+	}
+
+	if !strings.HasSuffix(posCfg.FinalDir, "/") {
+		posCfg.FinalDir = posCfg.FinalDir + "/"
 	}
 
 	args = append(args, "--threads", posCfg.NumThreads)
