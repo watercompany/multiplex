@@ -14,7 +14,6 @@ var (
 	TaskName     string
 	databaseAddr string
 	localDrive   string
-	finalDrive   string
 )
 
 func init() {
@@ -46,13 +45,6 @@ func init() {
 		"",
 		"name of local drive for temp plot files",
 	)
-
-	addJobCmd.Flags().StringVar(
-		&finalDrive,
-		"final-drive",
-		"",
-		"name of final drive for final plot files",
-	)
 }
 
 var addJobCmd = &cobra.Command{
@@ -74,11 +66,6 @@ var addJobCmd = &cobra.Command{
 			finalDir = fmt.Sprintf("/mnt/%s/plotfiles/final", localDrive)
 		}
 
-		var finalDestDir string = ""
-		if finalDrive != "" {
-			finalDestDir = fmt.Sprintf("/mnt/%s", finalDrive)
-		}
-
 		var addArgs []string
 		var posCfg worker.POSCfg
 		switch TaskName {
@@ -96,11 +83,10 @@ var addJobCmd = &cobra.Command{
 			}
 		}
 
-		if finalDestDir != "" {
+		if tempDir != "" {
 			posCfg.TempDir = tempDir
 			posCfg.Temp2Dir = temp2Dir
 			posCfg.FinalDir = finalDir
-			posCfg.FinalDestDir = finalDestDir
 		}
 
 		clientCfg := client.CallWorkerConfig{

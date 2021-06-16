@@ -7,6 +7,7 @@ go mod verify
 go mod tidy
 go mod download
 ```
+- Requires go 1.16.5 or later
 - Must setup chia-blockchain before using Multiplex
 
 ## Manual Usage 
@@ -18,8 +19,10 @@ Follow these steps for manual usage:
 5. Give Jobs to Workers
 6. View Queued Jobs
 
-Or run automated script that follows step 1-3:
+Or run automated script that follows step 1-4:
+```
 WORKERS=[number of workers] make run-multiplex
+```
 
 ### Deployment of Worker
 Use this command to deploy workers.
@@ -50,10 +53,6 @@ go run ./job/dispatcher/main.go -workers=8 &
 ### Run Mover
 Use this command to run the dispatcher.
 ```
-go run ./mover/move-worker/main.go
-```
-###### Example
-```
 go run ./mover/move-worker/main.go &
 ```
 
@@ -67,12 +66,12 @@ go run main.go add-job --task=[task name] --log-name=[log-output-name]
 ##### Example
 For Proof of Space exec
 ```
-go run main.go add-job  --task=pos --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 --final-drive=skynas-1
+go run main.go add-job  --task=pos --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 
 ```
 
 For Proof of Space multi-threaded exec
 ```
-go run main.go add-job  --task=posv2 --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 --final-drive=skynas-1
+go run main.go add-job  --task=posv2 --log-name=test-ssd1 --db-addr=192.168.3.1:6379 --local-drive=ssd1 
 ```
 
 ### View Queued Jobs

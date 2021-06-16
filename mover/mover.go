@@ -42,8 +42,8 @@ func MoveFile(sourcePath, destPath, filename string) error {
 	}
 
 	// Create lock files
-	// transfer-lock-[unix-time]
-	transferLock := fmt.Sprintf("%s-%v", transferLockName, time.Now().Unix())
+	// transfer-lock-[unix-nano-time]
+	transferLock := fmt.Sprintf("%s-%v", transferLockName, time.Now().UnixNano())
 	tfl, err := os.Create(destDir + transferLock)
 	if err != nil {
 		return fmt.Errorf("failed creating transfer lock file: %s", err)
