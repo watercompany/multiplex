@@ -50,7 +50,7 @@ var viewJobsCmd = &cobra.Command{
 			}
 		} else {
 			fmt.Printf("%v:%v\n", "Queued jobs", kv["job-last-index"])
-			fmt.Printf("%v:%v\n", "Queued jobs", kv["job-last-index"])
+			fmt.Printf("%v:%v\n", "Active Jobs", kv["active-jobs"])
 		}
 
 	},
