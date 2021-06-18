@@ -7,6 +7,10 @@ import (
 	"github.com/watercompany/multiplex/job"
 )
 
+var (
+	showAll bool
+)
+
 func init() {
 	rootCmd.AddCommand(viewJobsCmd)
 	viewJobsCmd.Flags().StringVar(
@@ -14,6 +18,12 @@ func init() {
 		"db-addr",
 		"",
 		"address of database to save jobs",
+	)
+	viewJobsCmd.Flags().BoolVar(
+		&showAll,
+		"show-all",
+		false,
+		"show all queued jobs",
 	)
 }
 
@@ -33,8 +43,15 @@ var viewJobsCmd = &cobra.Command{
 		}
 
 		fmt.Printf("All queued jobs:\n")
-		for key, val := range kv {
-			fmt.Printf("%v:%v\n", key, val)
+
+		if showAll {
+			for key, val := range kv {
+				fmt.Printf("%v:%v\n", key, val)
+			}
+		} else {
+			fmt.Printf("%v:%v\n", "Queued jobs", kv["job-last-index"])
+			fmt.Printf("%v:%v\n", "Queued jobs", kv["job-last-index"])
 		}
+
 	},
 }
