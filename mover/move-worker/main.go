@@ -391,7 +391,7 @@ func RemoveStagnantTempFiles(dir string) error {
 	defer cleanerLog.Close()
 
 	// Log header
-	_, err = cleanerLog.Write([]byte("Deleting files that were last modified 2 hours or older...\n"))
+	_, err = cleanerLog.Write([]byte("Deleting files that were last modified 4 hours or older...\n"))
 	if err != nil {
 		return err
 	}
@@ -429,7 +429,7 @@ func RemoveStagnantTempFiles(dir string) error {
 
 		modifiedtime := file.ModTime()
 		timeLastModifiedInHours := time.Since(modifiedtime).Hours()
-		if timeLastModifiedInHours > 4.0 {
+		if timeLastModifiedInHours > 4.0 && strings.Contains(name, "plot") {
 			err = os.RemoveAll(path)
 			if err != nil {
 				return err
