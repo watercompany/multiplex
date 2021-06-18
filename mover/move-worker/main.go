@@ -429,7 +429,7 @@ func RemoveStagnantTempFiles(dir string) error {
 
 		modifiedtime := file.ModTime()
 		timeLastModifiedInHours := time.Since(modifiedtime).Hours()
-		if timeLastModifiedInHours > 2.0 {
+		if timeLastModifiedInHours > 4.0 {
 			err = os.RemoveAll(path)
 			if err != nil {
 				return err
