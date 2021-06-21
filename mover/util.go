@@ -122,7 +122,8 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 	for _, finalDir := range finalDirs {
 		// Check if destpath have available size for that
 		destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
-		hasAvailableSpace := fileSize < int64(destFreeSpace)
+		// has available space if filesize+100GB is less than free space
+		hasAvailableSpace := (fileSize + 100000) < int64(destFreeSpace)
 
 		// Check if exceeded max lock files
 		count, err := FileCountSubString(finalDir, transferLockName)
