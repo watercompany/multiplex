@@ -25,24 +25,24 @@ func main() {
 	log.SetOutput(f)
 
 	// Clean out temp dirs
-	err = CleanOutTempDirs()
-	if err != nil {
-		log.Printf("error cleaning out temp dirs: %v", err)
-		panic(err)
-	}
-	fmt.Printf("Finished cleaning local temp files.\n")
-	log.Printf("Finished cleaning local temp files.\n")
+	// err = CleanOutTempDirs()
+	// if err != nil {
+	// 	log.Printf("error cleaning out temp dirs: %v", err)
+	// 	panic(err)
+	// }
+	// fmt.Printf("Finished cleaning local temp files.\n")
+	// log.Printf("Finished cleaning local temp files.\n")
 
-	// Clean out final temp dirs
-	err = CleanFinalTempdDir()
-	if err != nil {
-		log.Printf("error cleaning out final temp dirs: %v", err)
-		panic(err)
-	}
-	fmt.Printf("Finished cleaning final destination temp files.\n")
+	// // Clean out final temp dirs
+	// err = CleanFinalTempdDir()
+	// if err != nil {
+	// 	log.Printf("error cleaning out final temp dirs: %v", err)
+	// 	panic(err)
+	// }
+	// fmt.Printf("Finished cleaning final destination temp files.\n")
 	fmt.Printf("Running mover now...\n")
 
-	log.Printf("Finished cleaning final destination temp files.\n")
+	// log.Printf("Finished cleaning final destination temp files.\n")
 	log.Printf("Running mover now...\n")
 
 	err = RunMover()
@@ -54,36 +54,64 @@ func main() {
 
 func RunMover() error {
 	localFinalDirs := []string{
-		"/mnt/ssd1/plotfiles/final",
-		"/mnt/ssd2/plotfiles/final",
-		"/mnt/ssd3/plotfiles/final",
-		"/mnt/ssd4/plotfiles/final",
-		"/mnt/ssd5/plotfiles/final",
-		"/mnt/ssd6/plotfiles/final",
-		"/mnt/ssd7/plotfiles/final",
-		"/mnt/ssd8/plotfiles/final",
+		// "/mnt/ssd1/plotfiles/final",
+		// "/mnt/ssd2/plotfiles/final",
+		// "/mnt/ssd3/plotfiles/final",
+		// "/mnt/ssd4/plotfiles/final",
+		// "/mnt/ssd5/plotfiles/final",
+		// "/mnt/ssd6/plotfiles/final",
+		// "/mnt/ssd7/plotfiles/final",
+		// "/mnt/ssd8/plotfiles/final",
+		"/mnt/md0/plotfiles/final",
+		"/mnt/md1/plotfiles/final",
+		"/mnt/md2/plotfiles/final",
+		"/mnt/md3/plotfiles/final",
 	}
 
 	finalDirs := []string{
-		"/mnt/skynas-1",
-		"/mnt/skynas-2",
-		"/mnt/skynas-3",
-		"/mnt/skynas-4",
-		"/mnt/skynas-5",
-		"/mnt/skynas-6",
-		"/mnt/skynas-7",
-		"/mnt/skynas-8",
-		"/mnt/skynas-9",
-		"/mnt/skynas-10",
-		"/mnt/skynas-11",
-		"/mnt/skynas-12",
-		"/mnt/skynas-13",
-		"/mnt/skynas-14",
-		"/mnt/skynas-15",
-		"/mnt/skynas-16",
+		// "/mnt/skynas-1",
+		// "/mnt/skynas-2",
+		// "/mnt/skynas-3",
+		// "/mnt/skynas-4",
+		// "/mnt/skynas-5",
+		// "/mnt/skynas-6",
+		// "/mnt/skynas-7",
+		// "/mnt/skynas-8",
+		// "/mnt/skynas-9",
+		// "/mnt/skynas-10",
+		// "/mnt/skynas-11",
+		// "/mnt/skynas-12",
+		// "/mnt/skynas-13",
+		// "/mnt/skynas-14",
+		// "/mnt/skynas-15",
+		// "/mnt/skynas-16",
+		"/mnt/ct-test/hdd1",
+		"/mnt/ct-test/hdd2",
+		"/mnt/ct-test/hdd3",
+		"/mnt/ct-test/hdd4",
+		"/mnt/ct-test/hdd5",
+		"/mnt/ct-test/hdd6",
+		"/mnt/ct-test/hdd7",
+		"/mnt/ct-test/hdd8",
+		"/mnt/ct-test/hdd9",
+		"/mnt/ct-test/hdd10",
+		"/mnt/ct-test/hdd11",
+		"/mnt/ct-test/hdd12",
+		"/mnt/ct-test/hdd13",
+		"/mnt/ct-test/hdd14",
+		"/mnt/ct-test/hdd15",
+		"/mnt/ct-test/hdd16",
+		"/mnt/ct-test/hdd17",
+		"/mnt/ct-test/hdd18",
+		"/mnt/ct-test/hdd19",
+		"/mnt/ct-test/hdd20",
+		"/mnt/ct-test/hdd21",
+		"/mnt/ct-test/hdd22",
+		"/mnt/ct-test/hdd23",
+		"/mnt/ct-test/hdd24",
 	}
 
-	maxLockFiles := 8
+	maxLockFiles := 1
 
 	for {
 		time.Sleep(5 * time.Second)
@@ -117,10 +145,6 @@ func RunMover() error {
 					continue
 				}
 
-				// sleep 10 seconds
-				// Trial fix for chiapos error on renaming
-				time.Sleep(10 * time.Second)
-
 				go func(localFinalDir, finalDir, fileName string) {
 					log.Printf("Moving file %v from %v to %v", fileName, localFinalDir, finalDir)
 					// Moves and Deletes
@@ -132,9 +156,9 @@ func RunMover() error {
 					log.Printf("Finished moving file %v from %v to %v", fileName, localFinalDir, finalDir)
 				}(localFinalDir, finalDir, fileName)
 
-				// sleep 5 seconds
+				// sleep 15 seconds
 				// let MoveFile make transfer lock first
-				time.Sleep(5 * time.Second)
+				time.Sleep(15 * time.Second)
 			}
 		}
 	}
