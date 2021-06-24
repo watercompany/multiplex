@@ -62,10 +62,10 @@ func RunMover() error {
 		// "/mnt/ssd6/plotfiles/final",
 		// "/mnt/ssd7/plotfiles/final",
 		// "/mnt/ssd8/plotfiles/final",
-		"/mnt/md0/plotfiles/final",
-		"/mnt/md1/plotfiles/final",
-		"/mnt/md2/plotfiles/final",
-		"/mnt/md3/plotfiles/final",
+		"/mnt/md0/final",
+		"/mnt/md1/final",
+		"/mnt/md2/final",
+		"/mnt/md3/final",
 	}
 
 	finalDirs := []string{
