@@ -109,6 +109,8 @@ func ExtractAndPutDrivePositions(in string) error {
 			return err
 		}
 
+		fmt.Printf("Mount point: %s\n", mntPoint)
+		fmt.Printf("Host: %v\n", host)
 		rowNum := getRowNumberFromHostNum(host)
 		fileStr := fmt.Sprintf("row-%v", rowNum)
 
