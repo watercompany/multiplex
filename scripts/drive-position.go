@@ -63,6 +63,7 @@ func FindDrives() (string, error) {
 		return "", fmt.Errorf("error starting cmd: %v", err)
 	}
 
+	time.Sleep(10 * time.Second)
 	err = cmd.Wait()
 	if err != nil {
 		return "", fmt.Errorf("error waiting for cmd: %v", err)
