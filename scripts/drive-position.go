@@ -19,6 +19,7 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Printf("Drives lsblk: \n%s\n", outputStr)
 	err = ExtractAndPutDrivePositions(outputStr)
 	if err != nil {
 		panic(err)
