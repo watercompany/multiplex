@@ -104,7 +104,7 @@ func ExtractAndPutDrivePositions(in string) error {
 			return err
 		}
 
-		mntPoint, err := parseMountPoint(in, val)
+		mntPoint, err := parseMountPoint(in, val+"1")
 		if err != nil {
 			return err
 		}
@@ -134,12 +134,9 @@ func ExtractAndPutDrivePositions(in string) error {
 }
 
 func parseHostFromHCTL(data, template string) (int, error) {
-	fmt.Printf("String=%s\n", data)
 	index := strings.Index(data, template)
 	hctlStr := getValueUntilSpace(data, index+len(template)+7)
-	fmt.Printf("HctlStr=%s\n", hctlStr)
-	fmt.Printf("HctlStr HOST=%s\n", hctlStr[0:1])
-	hostStr := hctlStr[0:1]
+	hostStr := hctlStr[0:2]
 	host, err := strconv.Atoi(hostStr)
 	if err != nil {
 		return 0, err
@@ -148,14 +145,19 @@ func parseHostFromHCTL(data, template string) (int, error) {
 }
 
 func parseMountPoint(data, template string) (string, error) {
-	index := strings.Index(data, template+"1")
-	mountPointStr := getValueUntilSpace(data, index+len(template)+17)
+	index := strings.Index(data, template)
+	mountPointStr := getValueUntilNewline(data, index+len(template)+17)
 
 	return mountPointStr, nil
 }
 
 func getValueUntilSpace(info string, index int) string {
 	end := strings.Index(info[index:], " ") + index
+	return info[index:end]
+}
+
+func getValueUntilNewline(info string, index int) string {
+	end := strings.Index(info[index:], "\n") + index
 	return info[index:end]
 }
 
