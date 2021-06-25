@@ -48,12 +48,12 @@ func FindDrives() (string, error) {
 		var scannedStr string
 		for scanner.Scan() {
 			scannedStr = scanner.Text()
-			outputStr = fmt.Sprintf("%s\n", scannedStr)
+			outputStr = outputStr + fmt.Sprintf("%s\n", scannedStr)
 		}
 
 		for errScanner.Scan() {
 			scannedStr = errScanner.Text()
-			outputStr = fmt.Sprintf("%s\n", scannedStr)
+			outputStr = outputStr + fmt.Sprintf("%s\n", scannedStr)
 		}
 	}()
 
