@@ -134,7 +134,7 @@ func ExtractAndPutDrivePositions(in string) error {
 }
 
 func parseHostFromHCTL(data, template string) (int, error) {
-	fmt.Printf("String=%x\n", data)
+	fmt.Printf("String=%s\n", data)
 	index := strings.Index(data, template)
 	hctlStr := getValueUntilSpace(data, index+len(template)+7)
 	fmt.Printf("HctlStr=%s\n", hctlStr)
