@@ -48,6 +48,7 @@ func MoveFile(sourcePath, destPath, filename string) error {
 	if err != nil {
 		return fmt.Errorf("failed creating transfer lock file: %s", err)
 	}
+	tfl.Chmod(0777)
 	tfl.Close()
 
 	inputFile, err := os.Open(tmpSrcPath)
