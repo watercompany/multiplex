@@ -80,15 +80,15 @@ func TestGetDirs(t *testing.T) {
 	}
 }
 
-func TestMoveFileToDrive(t *testing.T) {
-	src := "./testdata/location-a"
-	dest := "/Volumes/KENJEH"
-	fileName := "music.mp3"
-	err := mover.MoveFile(src, dest, fileName)
-	if err != nil {
-		t.Fatalf("error moving %v", err)
-	}
-}
+// func TestMoveFileToDrive(t *testing.T) {
+// 	src := "./testdata/location-a"
+// 	dest := "/Volumes/KENJEH"
+// 	fileName := "music.mp3"
+// 	err := mover.MoveFile(src, dest, fileName)
+// 	if err != nil {
+// 		t.Fatalf("error moving %v", err)
+// 	}
+// }
 
 func TestGetFinalDir(t *testing.T) {
 	finalDirs := []string{

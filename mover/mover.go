@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	transferLockName = "transfer-lock"
+	TransferLockName = "transfer-lock"
 )
 
 func MoveFile(sourcePath, destPath, filename string) error {
@@ -43,7 +43,7 @@ func MoveFile(sourcePath, destPath, filename string) error {
 
 	// Create lock files
 	// transfer-lock-[unix-nano-time]
-	transferLock := fmt.Sprintf("%s-%v", transferLockName, time.Now().UnixNano())
+	transferLock := fmt.Sprintf("%s-%v", TransferLockName, time.Now().UnixNano())
 	tfl, err := os.Create(destDir + transferLock)
 	if err != nil {
 		// Rename source path from temp src to src
@@ -142,7 +142,7 @@ func MoveFileV2(sourcePath, destPath, filename string) error {
 
 	// Create lock files
 	// transfer-lock-[unix-nano-time]
-	transferLock := fmt.Sprintf("%s-%v", transferLockName, time.Now().UnixNano())
+	transferLock := fmt.Sprintf("%s-%v", TransferLockName, time.Now().UnixNano())
 	tfl, err := os.Create(destDir + transferLock)
 	if err != nil {
 		return fmt.Errorf("failed creating transfer lock file: %s", err)

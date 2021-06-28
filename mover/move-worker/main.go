@@ -25,13 +25,13 @@ func main() {
 	log.SetOutput(f)
 
 	// Clean out temp dirs
-	// err = CleanOutTempDirs()
-	// if err != nil {
-	// 	log.Printf("error cleaning out temp dirs: %v", err)
-	// 	panic(err)
-	// }
-	// fmt.Printf("Finished cleaning local temp files.\n")
-	// log.Printf("Finished cleaning local temp files.\n")
+	err = CleanOutTempDirs()
+	if err != nil {
+		log.Printf("error cleaning out temp dirs: %v", err)
+		panic(err)
+	}
+	fmt.Printf("Finished cleaning local temp files.\n")
+	log.Printf("Finished cleaning local temp files.\n")
 
 	// // Clean out final temp dirs
 	// err = CleanFinalTempdDir()
@@ -40,9 +40,9 @@ func main() {
 	// 	panic(err)
 	// }
 	// fmt.Printf("Finished cleaning final destination temp files.\n")
-	fmt.Printf("Running mover now...\n")
-
 	// log.Printf("Finished cleaning final destination temp files.\n")
+
+	fmt.Printf("Running mover now...\n")
 	log.Printf("Running mover now...\n")
 
 	err = RunMover()
@@ -304,9 +304,17 @@ func RunMover() error {
 	}
 
 	maxLockFiles := 1
-
+	maxAgeOfLockFilesInHours := 2.0
 	for {
 		time.Sleep(5 * time.Second)
+
+		// Delete old transfer locks
+		for _, finalDir := range finalDirs {
+			err := mover.DeleteIfNoActivity(finalDir, mover.TransferLockName, maxAgeOfLockFilesInHours)
+			if err != nil {
+				return fmt.Errorf("error in cleaning transfer locks: %v", err)
+			}
+		}
 
 		for _, localFinalDir := range localFinalDirs {
 			dirs, err := mover.GetDirs(localFinalDir)
@@ -357,102 +365,55 @@ func RunMover() error {
 }
 
 func CleanOutTempDirs() error {
-	ssd1a := "/mnt/ssd1/plotfiles/temp"
-	ssd1b := "/mnt/ssd1/plotfiles/temp2"
-	ssd2a := "/mnt/ssd2/plotfiles/temp"
-	ssd2b := "/mnt/ssd2/plotfiles/temp2"
-	ssd3a := "/mnt/ssd3/plotfiles/temp"
-	ssd3b := "/mnt/ssd3/plotfiles/temp2"
-	ssd4a := "/mnt/ssd4/plotfiles/temp"
-	ssd4b := "/mnt/ssd4/plotfiles/temp2"
-	ssd5a := "/mnt/ssd5/plotfiles/temp"
-	ssd5b := "/mnt/ssd5/plotfiles/temp2"
-	ssd6a := "/mnt/ssd6/plotfiles/temp"
-	ssd6b := "/mnt/ssd6/plotfiles/temp2"
-	ssd7a := "/mnt/ssd7/plotfiles/temp"
-	ssd7b := "/mnt/ssd7/plotfiles/temp2"
-	ssd8a := "/mnt/ssd8/plotfiles/temp"
-	ssd8b := "/mnt/ssd8/plotfiles/temp2"
+	md0a := "/mnt/md0/temp"
+	md0b := "/mnt/md0/temp2"
+	md1a := "/mnt/md1/temp"
+	md1b := "/mnt/md1/temp2"
+	md2a := "/mnt/md2/temp"
+	md2b := "/mnt/md2/temp2"
+	md3a := "/mnt/md3/temp"
+	md3b := "/mnt/md3/temp2"
 
-	// SSD1
-	err := DeleteTempFiles(ssd1a)
+	// MD0
+	err := DeleteTempFiles(md0a)
 	if err != nil {
 		return err
 	}
-	err = DeleteTempFiles(ssd1b)
+	err = DeleteTempFiles(md0b)
 	if err != nil {
 		return err
 	}
 
-	// SSD2
-	err = DeleteTempFiles(ssd2a)
+	// MD1
+	err = DeleteTempFiles(md1a)
 	if err != nil {
 		return err
 	}
-	err = DeleteTempFiles(ssd2b)
-	if err != nil {
-		return err
-	}
-
-	// SSD3
-	err = DeleteTempFiles(ssd3a)
-	if err != nil {
-		return err
-	}
-	err = DeleteTempFiles(ssd3b)
+	err = DeleteTempFiles(md1b)
 	if err != nil {
 		return err
 	}
 
-	// SSD4
-	err = DeleteTempFiles(ssd4a)
+	// MD2
+	err = DeleteTempFiles(md2a)
 	if err != nil {
 		return err
 	}
-	err = DeleteTempFiles(ssd4b)
-	if err != nil {
-		return err
-	}
-
-	// SSD5
-	err = DeleteTempFiles(ssd5a)
-	if err != nil {
-		return err
-	}
-	err = DeleteTempFiles(ssd5b)
+	err = DeleteTempFiles(md2b)
 	if err != nil {
 		return err
 	}
 
-	// SSD6
-	err = DeleteTempFiles(ssd6a)
+	// MD3
+	err = DeleteTempFiles(md3a)
 	if err != nil {
 		return err
 	}
-	err = DeleteTempFiles(ssd6b)
-	if err != nil {
-		return err
-	}
-
-	// SSD7
-	err = DeleteTempFiles(ssd7a)
-	if err != nil {
-		return err
-	}
-	err = DeleteTempFiles(ssd7b)
+	err = DeleteTempFiles(md3b)
 	if err != nil {
 		return err
 	}
 
-	// SSD8
-	err = DeleteTempFiles(ssd8a)
-	if err != nil {
-		return err
-	}
-	err = DeleteTempFiles(ssd8b)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
