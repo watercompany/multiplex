@@ -132,7 +132,7 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 		}
 
 		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, transferLockName)
+		count, err := FileCountSubString(finalDir, TransferLockName)
 		if err != nil {
 			return "", err
 		}
@@ -161,7 +161,7 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 		}
 
 		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, transferLockName)
+		count, err := FileCountSubString(finalDir, TransferLockName)
 		if err != nil {
 			return "", err
 		}
@@ -190,7 +190,7 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 		}
 
 		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, transferLockName)
+		count, err := FileCountSubString(finalDir, TransferLockName)
 		if err != nil {
 			return "", err
 		}
@@ -209,7 +209,7 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 	// no row group priority
 	for _, finalDir := range finalDirs {
 		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, transferLockName)
+		count, err := FileCountSubString(finalDir, TransferLockName)
 		if err != nil {
 			return "", err
 		}
@@ -227,4 +227,44 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 
 	// No available dirs
 	return "", nil
+}
+
+// Delete files with substring subStr that
+// have no activity for more than AgeLimitInHours.
+func DeleteIfNoActivity(path string, subStr string, AgeLimitInHours float64) error {
+	var dirs []fs.DirEntry
+	var err error
+	// TODO: find better fix for readdirent error
+	// with using Readdirnames on cifs mounts
+	readDirPass := true
+	for readDirPass {
+		dirs, err = os.ReadDir(path)
+		if err == nil {
+			readDirPass = false
+			continue
+		}
+
+		if !strings.Contains(err.Error(), "readdirent") {
+			return fmt.Errorf("error counting files: %v", err)
+		}
+		time.Sleep(5 * time.Second)
+	}
+
+	for _, dir := range dirs {
+		info, err := dir.Info()
+		if err != nil {
+			return fmt.Errorf("error getting file info: %v", err)
+		}
+
+		if strings.Contains(dir.Name(), subStr) &&
+			time.Since(info.ModTime()).Hours() > AgeLimitInHours {
+			// Delete file
+			err = os.Remove(path + "/" + dir.Name())
+			if err != nil {
+				return fmt.Errorf("failed deleting file: %s", err)
+			}
+		}
+	}
+
+	return nil
 }
