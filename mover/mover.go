@@ -46,6 +46,12 @@ func MoveFile(sourcePath, destPath, filename string) error {
 	transferLock := fmt.Sprintf("%s-%v", transferLockName, time.Now().UnixNano())
 	tfl, err := os.Create(destDir + transferLock)
 	if err != nil {
+		// Rename source path from temp src to src
+		err1 := os.Rename(tmpSrcPath, sourcePath)
+		if err1 != nil {
+			return fmt.Errorf("failed creating transfer lock file: %v: failed renaming final file back to source: %s", err, err1)
+		}
+
 		return fmt.Errorf("failed creating transfer lock file: %s", err)
 	}
 	tfl.Chmod(0777)
@@ -53,17 +59,35 @@ func MoveFile(sourcePath, destPath, filename string) error {
 
 	inputFile, err := os.Open(tmpSrcPath)
 	if err != nil {
+		// Rename source path from temp src to src
+		err1 := os.Rename(tmpSrcPath, sourcePath)
+		if err1 != nil {
+			return fmt.Errorf("couldn't open source file: %v: failed renaming final file back to source: %s", err, err1)
+		}
+
 		return fmt.Errorf("couldn't open source file: %s", err)
 	}
 	outputFile, err := os.Create(tmpDestPath)
 	if err != nil {
 		inputFile.Close()
+		// Rename source path from temp src to src
+		err1 := os.Rename(tmpSrcPath, sourcePath)
+		if err1 != nil {
+			return fmt.Errorf("couldn't open dest file: %v: failed renaming final file back to source: %s", err, err1)
+		}
+
 		return fmt.Errorf("couldn't open dest file: %s", err)
 	}
 	defer outputFile.Close()
 	_, err = io.Copy(outputFile, inputFile)
 	inputFile.Close()
 	if err != nil {
+		// Rename source path from temp src to src
+		err1 := os.Rename(tmpSrcPath, sourcePath)
+		if err1 != nil {
+			return fmt.Errorf("writing to output file failed: %v: failed renaming final file back to source: %s", err, err1)
+		}
+
 		return fmt.Errorf("writing to output file failed: %s", err)
 	}
 	// The copy was successful, so now delete the original file
