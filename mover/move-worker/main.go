@@ -312,7 +312,8 @@ func RunMover() error {
 		for _, finalDir := range finalDirs {
 			err := mover.DeleteIfNoActivity(finalDir, mover.TransferLockName, maxAgeOfLockFilesInHours)
 			if err != nil {
-				return fmt.Errorf("error in cleaning transfer locks: %v", err)
+				// Log only, dont return error
+				log.Printf("error in cleaning transfer locks: %v", err)
 			}
 		}
 
