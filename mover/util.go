@@ -207,23 +207,23 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 	}
 
 	// no row group priority
-	for _, finalDir := range finalDirs {
-		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, TransferLockName)
-		if err != nil {
-			return "", err
-		}
-		hasExceededMaxLocks := count >= maxLockFiles
+	// for _, finalDir := range finalDirs {
+	// 	// Check if exceeded max lock files
+	// 	count, err := FileCountSubString(finalDir, TransferLockName)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+	// 	hasExceededMaxLocks := count >= maxLockFiles
 
-		// Check if destpath have available size for that
-		destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
-		// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
-		hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
+	// 	// Check if destpath have available size for that
+	// 	destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
+	// 	// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
+	// 	hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
 
-		if hasAvailableSpace && !hasExceededMaxLocks {
-			return finalDir, nil
-		}
-	}
+	// 	if hasAvailableSpace && !hasExceededMaxLocks {
+	// 		return finalDir, nil
+	// 	}
+	// }
 
 	// No available dirs
 	return "", nil
