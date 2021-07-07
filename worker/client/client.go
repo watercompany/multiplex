@@ -16,7 +16,7 @@ type CallWorkerConfig struct {
 }
 
 func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Result) {
-	erpc.SetLoggerLevel("ON")()
+	// erpc.SetLoggerLevel("ON")()
 	cli := erpc.NewPeer(erpc.PeerConfig{RedialTimes: -1, RedialInterval: time.Second})
 	defer cli.Close()
 	cli.SetTLSConfig(erpc.GenerateTLSConfigForClient())
@@ -24,7 +24,8 @@ func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Resu
 
 	sess, stat := cli.Dial(workerAddr)
 	if !stat.OK() {
-		erpc.Fatalf("%v", stat)
+		erpc.Criticalf("%v", stat)
+		return
 	}
 	defer sess.Close()
 
@@ -44,7 +45,8 @@ func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Resu
 	).Status()
 
 	if !stat.OK() {
-		erpc.Fatalf("%v", stat)
+		erpc.Criticalf("%v", stat)
+		return
 	}
 }
 
