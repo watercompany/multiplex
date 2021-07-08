@@ -3,6 +3,7 @@ package mover
 import (
 	"fmt"
 	"io/fs"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -119,73 +120,29 @@ func FileSizeInMB(path string) (int64, error) {
 // GetFinalDir returns final dir that
 // can accomodate the size of the file.
 func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, error) {
-	// row-1 group priority
+	// randomize finalDirs
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(finalDirs), func(i, j int) { finalDirs[i], finalDirs[j] = finalDirs[j], finalDirs[i] })
+
+	// no priority
 	for _, finalDir := range finalDirs {
-		// Check if directory is row-1
+		// Check if directory has row-1, row-2, or row-3
 		row1Count, err := FileCountSubString(finalDir, "row-1")
 		if err != nil {
 			return "", err
 		}
 
-		if row1Count == 0 {
-			continue
-		}
-
-		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, TransferLockName)
-		if err != nil {
-			return "", err
-		}
-		hasExceededMaxLocks := count >= maxLockFiles
-
-		// Check if destpath have available size for that
-		destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
-		// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
-		hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
-
-		if hasAvailableSpace && !hasExceededMaxLocks {
-			return finalDir, nil
-		}
-	}
-
-	// row-2 group priority
-	for _, finalDir := range finalDirs {
-		// Check if directory is row-2
 		row2Count, err := FileCountSubString(finalDir, "row-2")
 		if err != nil {
 			return "", err
 		}
 
-		if row2Count == 0 {
-			continue
-		}
-
-		// Check if exceeded max lock files
-		count, err := FileCountSubString(finalDir, TransferLockName)
-		if err != nil {
-			return "", err
-		}
-		hasExceededMaxLocks := count >= maxLockFiles
-
-		// Check if destpath have available size for that
-		destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
-		// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
-		hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
-
-		if hasAvailableSpace && !hasExceededMaxLocks {
-			return finalDir, nil
-		}
-	}
-
-	// row-3 group priority
-	for _, finalDir := range finalDirs {
-		// Check if directory is row-3
 		row3Count, err := FileCountSubString(finalDir, "row-3")
 		if err != nil {
 			return "", err
 		}
 
-		if row3Count == 0 {
+		if row1Count == 0 && row2Count == 0 && row3Count == 0 {
 			continue
 		}
 
@@ -205,6 +162,93 @@ func GetFinalDir(fileSize int64, finalDirs []string, maxLockFiles int) (string, 
 			return finalDir, nil
 		}
 	}
+
+	// // row-1 group priority
+	// for _, finalDir := range finalDirs {
+	// 	// Check if directory is row-1
+	// 	row1Count, err := FileCountSubString(finalDir, "row-1")
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+
+	// 	if row1Count == 0 {
+	// 		continue
+	// 	}
+
+	// 	// Check if exceeded max lock files
+	// 	count, err := FileCountSubString(finalDir, TransferLockName)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+	// 	hasExceededMaxLocks := count >= maxLockFiles
+
+	// 	// Check if destpath have available size for that
+	// 	destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
+	// 	// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
+	// 	hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
+
+	// 	if hasAvailableSpace && !hasExceededMaxLocks {
+	// 		return finalDir, nil
+	// 	}
+	// }
+
+	// // row-2 group priority
+	// for _, finalDir := range finalDirs {
+	// 	// Check if directory is row-2
+	// 	row2Count, err := FileCountSubString(finalDir, "row-2")
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+
+	// 	if row2Count == 0 {
+	// 		continue
+	// 	}
+
+	// 	// Check if exceeded max lock files
+	// 	count, err := FileCountSubString(finalDir, TransferLockName)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+	// 	hasExceededMaxLocks := count >= maxLockFiles
+
+	// 	// Check if destpath have available size for that
+	// 	destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
+	// 	// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
+	// 	hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
+
+	// 	if hasAvailableSpace && !hasExceededMaxLocks {
+	// 		return finalDir, nil
+	// 	}
+	// }
+
+	// // row-3 group priority
+	// for _, finalDir := range finalDirs {
+	// 	// Check if directory is row-3
+	// 	row3Count, err := FileCountSubString(finalDir, "row-3")
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+
+	// 	if row3Count == 0 {
+	// 		continue
+	// 	}
+
+	// 	// Check if exceeded max lock files
+	// 	count, err := FileCountSubString(finalDir, TransferLockName)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+	// 	hasExceededMaxLocks := count >= maxLockFiles
+
+	// 	// Check if destpath have available size for that
+	// 	destFreeSpace := GetFreeDiskSpaceInMB(finalDir)
+	// 	// has available space if filesize+110GB+(current transfer count*102GB) is less than free space
+	// 	hasAvailableSpace := (fileSize + 110000 + (int64(count) * 102000)) < int64(destFreeSpace)
+
+	// 	if hasAvailableSpace && !hasExceededMaxLocks {
+	// 		return finalDir, nil
+	// 	}
+	// }
 
 	// no row group priority
 	// for _, finalDir := range finalDirs {
