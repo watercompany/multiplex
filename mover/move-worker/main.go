@@ -364,7 +364,8 @@ func RunMover() error {
 						return
 					}
 					movingFiles--
-					log.Printf("Finished moving file %v from %v to %v", fileName, localFinalDir, finalDir)
+					log.Printf("Finished moving file %v from %v to %v\n", fileName, localFinalDir, finalDir)
+					log.Printf("Moving Files: %v\n", movingFiles)
 				}(localFinalDir, finalDir, fileName)
 
 				// sleep 15 seconds
