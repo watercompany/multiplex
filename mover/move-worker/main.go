@@ -311,7 +311,7 @@ func RunMover() error {
 	maxLockFiles := 1
 	maxAgeOfLockFilesInHours := 2.0
 	movingFiles := 0
-	maxMovingFiles := 5
+	maxMovingFiles := 1
 	for {
 		time.Sleep(5 * time.Second)
 
