@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -57,39 +58,53 @@ func MoveFile(sourcePath, destPath, filename string) error {
 	tfl.Chmod(0777)
 	tfl.Close()
 
-	inputFile, err := os.Open(tmpSrcPath)
+	// OLD COPY
+	// inputFile, err := os.Open(tmpSrcPath)
+	// if err != nil {
+	// 	// Rename source path from temp src to src
+	// 	err1 := os.Rename(tmpSrcPath, sourcePath)
+	// 	if err1 != nil {
+	// 		return fmt.Errorf("couldn't open source file: %v: failed renaming final file back to source: %s", err, err1)
+	// 	}
+
+	// 	return fmt.Errorf("couldn't open source file: %s", err)
+	// }
+	// outputFile, err := os.Create(tmpDestPath)
+	// if err != nil {
+	// 	inputFile.Close()
+	// 	// Rename source path from temp src to src
+	// 	err1 := os.Rename(tmpSrcPath, sourcePath)
+	// 	if err1 != nil {
+	// 		return fmt.Errorf("couldn't open dest file: %v: failed renaming final file back to source: %s", err, err1)
+	// 	}
+
+	// 	return fmt.Errorf("couldn't open dest file: %s", err)
+	// }
+	// defer outputFile.Close()
+	// _, err = io.Copy(outputFile, inputFile)
+	// inputFile.Close()
+	// if err != nil {
+	// 	// Rename source path from temp src to src
+	// 	err1 := os.Rename(tmpSrcPath, sourcePath)
+	// 	if err1 != nil {
+	// 		return fmt.Errorf("writing to output file failed: %v: failed renaming final file back to source: %s", err, err1)
+	// 	}
+
+	// 	return fmt.Errorf("writing to output file failed: %s", err)
+	// }
+
+	// COPY USING RSYNC
+	err = RunRsyncCmd(tmpSrcPath, destDir)
 	if err != nil {
 		// Rename source path from temp src to src
 		err1 := os.Rename(tmpSrcPath, sourcePath)
 		if err1 != nil {
-			return fmt.Errorf("couldn't open source file: %v: failed renaming final file back to source: %s", err, err1)
+			return fmt.Errorf("failed copying file using rsync: %v: failed renaming final file back to source: %s", err, err1)
 		}
 
-		return fmt.Errorf("couldn't open source file: %s", err)
+		return fmt.Errorf("failed copying file using rsync: %s", err)
 	}
-	outputFile, err := os.Create(tmpDestPath)
-	if err != nil {
-		inputFile.Close()
-		// Rename source path from temp src to src
-		err1 := os.Rename(tmpSrcPath, sourcePath)
-		if err1 != nil {
-			return fmt.Errorf("couldn't open dest file: %v: failed renaming final file back to source: %s", err, err1)
-		}
 
-		return fmt.Errorf("couldn't open dest file: %s", err)
-	}
-	defer outputFile.Close()
-	_, err = io.Copy(outputFile, inputFile)
-	inputFile.Close()
-	if err != nil {
-		// Rename source path from temp src to src
-		err1 := os.Rename(tmpSrcPath, sourcePath)
-		if err1 != nil {
-			return fmt.Errorf("writing to output file failed: %v: failed renaming final file back to source: %s", err, err1)
-		}
-
-		return fmt.Errorf("writing to output file failed: %s", err)
-	}
 	// The copy was successful, so now delete the original file
 	err = os.Remove(tmpSrcPath)
 	if err != nil {
@@ -191,6 +206,27 @@ func MakeTempDir(dir string, name string) error {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		err := os.Mkdir(dir, 0777)
 		return fmt.Errorf("failed to make folder: %s", err)
+	}
+	return nil
+}
+
+func RunRsyncCmd(sourcePath, destPath string) error {
+	rsyncDestPath, err := GetRsyncDestPath(destPath)
+	if err != nil {
+		return fmt.Errorf("err running rsync cmd: %v", err)
+	}
+
+	cmd := exec.Command("sudo", "rsync",
+		"-a", sourcePath, rsyncDestPath)
+
+	err = cmd.Start()
+	if err != nil {
+		return fmt.Errorf("err running rsync cmd: %v", err)
+	}
+
+	err = cmd.Wait()
+	if err != nil {
+		return fmt.Errorf("err running rsync cmd: %v", err)
 	}
 	return nil
 }
