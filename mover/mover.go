@@ -99,9 +99,13 @@ func MoveFile(sourcePath, destPath, filename string) error {
 		// Rename source path from temp src to src
 		err1 := os.Rename(tmpSrcPath, sourcePath)
 		if err1 != nil {
+			// Delete transfer lock file
+			_ = os.Remove(destDir + transferLock)
 			return fmt.Errorf("failed copying file using rsync: %v: failed renaming final file back to source: %s", err, err1)
 		}
 
+		// Delete transfer lock file
+		_ = os.Remove(destDir + transferLock)
 		return fmt.Errorf("failed copying file using rsync: %s", err)
 	}
 
