@@ -221,7 +221,7 @@ func RunRsyncCmd(sourcePath, destPath string) error {
 	}
 
 	cmd := exec.Command("sudo", "rsync",
-		"-a", sourcePath, rsyncDestPath)
+		"-a", "--no-compress", sourcePath, rsyncDestPath)
 
 	err = cmd.Start()
 	if err != nil {
