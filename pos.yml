@@ -4,12 +4,12 @@
     final_dir: "/mnt/ssd5/plotfiles/final"
     # final_dest_dir is the final dir for the plot
     # this is where we will move it out from local SSDs to SMBs
-    final_dest_dir: "/mnt/skynas-1" 
+    final_dest_dir: "/mnt/skynas-1"
     size: "32"
-    buffer: "16000"
+    buffer: "8000"
     stripe_size: "65536"
-    num_threads: "6"
-    num_buckets: "64"
+    num_threads: "16"
+    num_buckets: "128"
     nobitfield: "false"
     farmer_public_key: "86900c5d26f26218afe1940cbfa90f1e8fa1ff37150720f46e5271712a6047c3dc783e3d793dd363e0d5df19b8961969"
-    pool_public_key: "91c9f95870989b0cb4430a8bc6c277c1b755969bca583a5111e0c884451eac5bd03b43e3b3ade2ddfbc3b03541dfe1f3"
+    pool_public_key: "a99f56f324f800c48ea5efaeb9a12f9783dcb2942e5528eba2331450368d1792b2cea4dc88018c50b6d7bcbb72a60ec4"
