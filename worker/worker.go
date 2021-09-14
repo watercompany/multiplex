@@ -85,8 +85,14 @@ func RunExecutable(taskName string, numactlArgs []string, args ...string) (PlotG
 	var plotGraph PlotGraph
 
 	preArgs := fmt.Sprintf("%s %s %s time", numactlArgs[0], numactlArgs[1], numactlArgs[2])
-	log.Printf("Command executed: %v %v\n", preArgs, args)
-	cmd := exec.Command(preArgs, args...)
+	log.Printf("Command executed: %s %v\n", preArgs, args)
+	execArgs := []string{}
+	execArgs = append(execArgs, numactlArgs[1])
+	execArgs = append(execArgs, numactlArgs[2])
+	execArgs = append(execArgs, "time")
+	execArgs = append(execArgs, args...)
+	// execArgs := append(preArgs, args...)
+	cmd := exec.Command(numactlArgs[0], execArgs...)
 
 	// create a pipe for the output of the script
 	cmdReader, err := cmd.StdoutPipe()
