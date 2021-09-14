@@ -84,7 +84,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 func RunExecutable(taskName string, numactlArgs []string, args ...string) (PlotGraph, error) {
 	var plotGraph PlotGraph
 
-	preArgs := fmt.Sprintf("%s time", numactlArgs)
+	preArgs := fmt.Sprintf("%s %s %s time", numactlArgs[0], numactlArgs[1], numactlArgs[2])
 	log.Printf("Command executed: %v %v\n", preArgs, args)
 	cmd := exec.Command(preArgs, args...)
 
