@@ -13,6 +13,7 @@ type CallWorkerConfig struct {
 	WorkerCfg      worker.WorkerCfg `json:"worker_cfg"`
 	AdditionalArgs []string         `json:"additional_args"`
 	POSCfg         worker.POSCfg    `json:"pos_cfg"`
+	NumactlArg     []string
 }
 
 func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Result) {
@@ -36,6 +37,7 @@ func CallWorker(cWorker CallWorkerConfig, workerAddr string, result *worker.Resu
 		WorkerCfg:      cWorker.WorkerCfg,
 		AdditionalArgs: cWorker.AdditionalArgs,
 		POSCfg:         cWorker.POSCfg,
+		NumactlArg:     cWorker.NumactlArg,
 	}
 
 	stat = sess.Call(

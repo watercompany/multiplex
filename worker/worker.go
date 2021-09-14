@@ -53,7 +53,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error not enough free space: %v MB", freeSpaceInMB))
 	}
 
-	plotGraphData, err := RunExecutable(args.TaskName, finalArg...)
+	plotGraphData, err := RunExecutable(args.TaskName, args.NumactlArg, finalArg...)
 	if err != nil {
 		log.Printf("error running exec: %v", err)
 		return Result{}, erpc.NewStatus(1, fmt.Sprintf("error running exec: %v", err))
@@ -81,11 +81,12 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	return res, nil
 }
 
-func RunExecutable(taskName string, args ...string) (PlotGraph, error) {
+func RunExecutable(taskName string, numactlArgs []string, args ...string) (PlotGraph, error) {
 	var plotGraph PlotGraph
 
-	log.Printf("Command executed: time %v\n", args)
-	cmd := exec.Command("time", args...)
+	preArgs := fmt.Sprintf("%s time", numactlArgs)
+	log.Printf("Command executed: %v %v\n", preArgs, args)
+	cmd := exec.Command(preArgs, args...)
 
 	// create a pipe for the output of the script
 	cmdReader, err := cmd.StdoutPipe()

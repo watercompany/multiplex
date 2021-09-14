@@ -13,6 +13,7 @@ type Args struct {
 	WorkerCfg      WorkerCfg
 	AdditionalArgs []string
 	POSCfg         POSCfg
+	NumactlArg     []string
 }
 
 type Result struct {

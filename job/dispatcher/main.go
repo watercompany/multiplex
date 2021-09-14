@@ -80,6 +80,20 @@ func RunDispatcher() {
 		}
 	}()
 
+	numaArgs := [][]string{
+		{"numactl", "--cpunodebind=0", "--membind=0"},
+		{"numactl", "--cpunodebind=1", "--membind=1"},
+		{"numactl", "--cpunodebind=2", "--membind=2"},
+		{"numactl", "--cpunodebind=3", "--membind=3"},
+	}
+
+	availNumaArgsCh := make(chan []string, len(numaArgs))
+	go func() {
+		for _, val := range numaArgs {
+			availNumaArgsCh <- val
+		}
+	}()
+
 	for {
 		time.Sleep(5 * time.Second)
 		jobs, err := job.GetNumberOfQueuedJobs("")
@@ -94,18 +108,24 @@ func RunDispatcher() {
 			// avail ports channel.
 			currPortNum := <-availPortsCh
 
+			// Get numactl arg
+			numactlArg := <-availNumaArgsCh
+
 			clientCfg, err := job.GetJob()
 			if err != nil {
 				log.Printf("error getting job: %v", err)
 				panic(err)
 			}
 
-			go func(clientCfg *client.CallWorkerConfig, currPortNum int) {
+			go func(clientCfg *client.CallWorkerConfig, currPortNum int, numactlArg []string) {
 				err := job.IncrActiveJobs()
 				if err != nil {
 					log.Printf("error incrementing active jobs: %v", err)
 					panic(err)
 				}
+
+				clientCfg.NumactlArg = numactlArg
+
 				var res *worker.Result
 				client.CallWorker(*clientCfg, fmt.Sprintf(":%v", currPortNum), res)
 
@@ -114,10 +134,13 @@ func RunDispatcher() {
 					log.Printf("error decrementing active jobs: %v", err)
 					panic(err)
 				}
-				// Append back the worker port number used so that
-				// it can be used by another go routine.
+
+				// Append back the worker port number
+				// and numactl arg used so that it
+				// can be used by another go routine.
 				availPortsCh <- currPortNum
-			}(clientCfg, currPortNum)
+				availNumaArgsCh <- numactlArg
+			}(clientCfg, currPortNum, numactlArg)
 		}
 	}
 }
