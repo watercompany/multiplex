@@ -19,7 +19,12 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 
 	timeNow := time.Now()
 	timeNowFormatted := timeNow.Format(time.RFC3339)
-	outputName := fmt.Sprintf("%v-%v-plot-generation-log", timeNowFormatted, args.LogName)
+	timeNowFormatted = strings.Replace(timeNowFormatted, ":", "-", -1)
+
+	plotName := args.POSCfg.FileName
+	plotName = strings.Replace(plotName, ".", "-", -1)
+
+	outputName := fmt.Sprintf("%v-%v-plot-generation-log", timeNowFormatted, plotName)
 	f, err := os.OpenFile(wCfg.OutputDir+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
@@ -28,7 +33,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	defer f.Close()
 	log.SetOutput(f)
 
-	paramLogName := fmt.Sprintf("%v-%v-param-and-time-log", timeNowFormatted, args.LogName)
+	paramLogName := fmt.Sprintf("%v-%v-param-and-time-log", timeNowFormatted, plotName)
 	paramLog, err := os.OpenFile(wCfg.OutputDir+paramLogName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Printf("error opening file: %v", err)
@@ -60,7 +65,7 @@ func (pw *ProgramWorker) RunWorker(args *Args) (Result, *erpc.Status) {
 	}
 
 	// Save plot graph data json
-	jsonOutputName := fmt.Sprintf("%v-%v-graph-data", timeNowFormatted, args.LogName)
+	jsonOutputName := fmt.Sprintf("%v-%v-graph-data", timeNowFormatted, plotName)
 	err = SavePlotGraphDataToJSON(plotGraphData, wCfg.OutputDir+jsonOutputName)
 	if err != nil {
 		log.Printf("error saving plot graph data json: %v", err)
