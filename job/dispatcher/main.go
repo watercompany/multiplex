@@ -35,6 +35,7 @@ func main() {
 	// Setup log
 	timeNow := time.Now()
 	timeNowFormatted := timeNow.Format(time.RFC3339)
+	timeNowFormatted = strings.Replace(timeNowFormatted, ":", "-", -1)
 	outputName := fmt.Sprintf("%v-dispatcher-log", timeNowFormatted)
 	f, err := os.OpenFile("./output/"+outputName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
