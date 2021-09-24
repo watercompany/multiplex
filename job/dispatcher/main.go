@@ -21,12 +21,15 @@ const (
 
 var (
 	numberOfWorkers int
+	dualCPU         *bool
 )
 
 // var wg = sync.WaitGroup{}
 
 func init() {
 	flag.IntVar(&numberOfWorkers, "workers", 1, "number of available workers")
+	dualCPU = flag.Bool("dual-cpu", false, "set if plotting server have dual cpu and will do 8 parallel plotting")
+
 }
 
 func main() {
@@ -86,6 +89,13 @@ func RunDispatcher() {
 		{"numactl", "--cpunodebind=1", "--membind=1"},
 		{"numactl", "--cpunodebind=2", "--membind=2"},
 		{"numactl", "--cpunodebind=3", "--membind=3"},
+	}
+
+	if *dualCPU {
+		numaArgs = append(numaArgs, []string{"numactl", "--cpunodebind=4", "--membind=4"})
+		numaArgs = append(numaArgs, []string{"numactl", "--cpunodebind=5", "--membind=5"})
+		numaArgs = append(numaArgs, []string{"numactl", "--cpunodebind=6", "--membind=6"})
+		numaArgs = append(numaArgs, []string{"numactl", "--cpunodebind=7", "--membind=7"})
 	}
 
 	availNumaArgsCh := make(chan []string, len(numaArgs))

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +11,17 @@ import (
 	"github.com/watercompany/multiplex/mover"
 )
 
+var (
+	dualCPU *bool
+)
+
+func init() {
+	dualCPU = flag.Bool("dual-cpu", false, "set if plotting server have dual cpu and will do 8 parallel plotting")
+}
+
 func main() {
+	flag.Parse()
+
 	// Setup log
 	timeNow := time.Now()
 	timeNowFormatted := timeNow.Format(time.RFC3339)
@@ -49,6 +60,13 @@ func RunMover() error {
 		"/mnt/md1/final",
 		"/mnt/md2/final",
 		"/mnt/md3/final",
+	}
+
+	if *dualCPU {
+		localFinalDirs = append(localFinalDirs, "/mnt/md4/final")
+		localFinalDirs = append(localFinalDirs, "/mnt/md5/final")
+		localFinalDirs = append(localFinalDirs, "/mnt/md6/final")
+		localFinalDirs = append(localFinalDirs, "/mnt/md7/final")
 	}
 
 	finalDirs := []string{
