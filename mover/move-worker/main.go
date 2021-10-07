@@ -62,13 +62,6 @@ func RunMover() error {
 		"/mnt/md3/final",
 	}
 
-	if *dualCPU {
-		localFinalDirs = append(localFinalDirs, "/mnt/md4/final")
-		localFinalDirs = append(localFinalDirs, "/mnt/md5/final")
-		localFinalDirs = append(localFinalDirs, "/mnt/md6/final")
-		localFinalDirs = append(localFinalDirs, "/mnt/md7/final")
-	}
-
 	finalDirs := []string{
 		// "/mnt/skynas-1",
 		// "/mnt/skynas-2",
